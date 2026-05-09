@@ -128,6 +128,11 @@
   .scroll-y::-webkit-scrollbar { width: 8px; }
   .scroll-y::-webkit-scrollbar-thumb { background: #D6DEDB; border-radius: 8px; }
 
+  /* Default desktop zoom — feels right-sized on PC web browser */
+  @media (min-width: 1024px) {
+    html { font-size: 110%; }
+  }
+
   /* Keep tap targets large on phone */
   @media (max-width: 640px) {
     .tap { min-height: 44px; }
@@ -1412,67 +1417,67 @@
 
             <!-- Time gutter (8a–7p) -->
             <div class="text-stone-400 num text-right pr-2">
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">8 AM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">9 AM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">10 AM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">11 AM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">12 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">1 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">2 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">3 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">4 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">5 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">6 PM</div>
-              <div style="height:36px" class="flex items-start justify-end pt-0.5">7 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">8 AM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">9 AM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">10 AM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">11 AM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">12 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">1 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">2 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">3 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">4 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">5 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">6 PM</div>
+              <div style="height:48px" class="flex items-start justify-end pt-0.5">7 PM</div>
             </div>
 
             <!-- Mon -->
-            <div class="border-l border-line relative" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
-              <div class="absolute left-1 right-1 top-[72px] h-[72px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer hover:bg-brand/15">
+            <div class="border-l border-line relative" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
+              <div class="absolute left-1 right-1 top-[96px] h-[96px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer hover:bg-brand/15">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Window · Echo Family</div>
                 <div class="text-[10px] text-stone-500 truncate">10:00 AM · Maria L.</div>
               </div>
-              <div class="absolute left-1 right-1 top-[252px] h-[108px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[336px] h-[144px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Post-construction · Mojave</div>
                 <div class="text-[10px] text-stone-500 truncate">2:00 PM · Jason</div>
               </div>
             </div>
 
             <!-- Tue -->
-            <div class="border-l border-line relative" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
-              <div class="absolute left-1 right-1 top-[36px] h-[72px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
+            <div class="border-l border-line relative" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
+              <div class="absolute left-1 right-1 top-[48px] h-[96px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Window · The Henderson</div>
                 <div class="text-[10px] text-stone-500 truncate">9:00 AM · Maria L.</div>
               </div>
-              <div class="absolute left-1 right-1 top-[180px] h-[72px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[240px] h-[96px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Move-out · Pinecrest</div>
                 <div class="text-[10px] text-stone-500 truncate">12:00 PM · Jason + 1</div>
               </div>
-              <div class="absolute left-1 right-1 top-[324px] h-[72px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[432px] h-[96px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Auto Spa</div>
                 <div class="text-[10px] text-stone-500 truncate">3:00 PM · Maria L.</div>
               </div>
             </div>
 
             <!-- Wed -->
-            <div class="border-l border-line relative" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
-              <div class="absolute left-1 right-1 top-[108px] h-[72px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
+            <div class="border-l border-line relative" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
+              <div class="absolute left-1 right-1 top-[144px] h-[96px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Post-construction · Mojave</div>
                 <div class="text-[10px] text-stone-500 truncate">11:00 AM · Jason + 2</div>
               </div>
-              <div class="absolute left-1 right-1 top-[288px] h-[72px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[384px] h-[96px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Oasis Dental</div>
                 <div class="text-[10px] text-stone-500 truncate">2:00 PM · Maria L.</div>
               </div>
             </div>
 
             <!-- Thu (light day) -->
-            <div class="border-l border-line relative" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
-              <div class="absolute left-1 right-1 top-[36px] bottom-1 rounded-md border border-dashed border-stone-300 bg-stone-50/50 p-2 grid place-items-center cursor-pointer hover:border-brand/50 hover:bg-brand-tint/20">
+            <div class="border-l border-line relative" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
+              <div class="absolute left-1 right-1 top-[48px] bottom-1 rounded-md border border-dashed border-stone-300 bg-stone-50/50 p-2 grid place-items-center cursor-pointer hover:border-brand/50 hover:bg-brand-tint/20">
                 <div class="text-center">
                   <i data-lucide="plus" class="w-4 h-4 text-stone-400 mx-auto"></i>
                   <div class="text-[10px] text-stone-400 mt-0.5">Open day · drop a job</div>
@@ -1481,42 +1486,42 @@
             </div>
 
             <!-- Fri -->
-            <div class="border-l border-line relative" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
-              <div class="absolute left-1 right-1 top-[36px] h-[72px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+            <div class="border-l border-line relative" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
+              <div class="absolute left-1 right-1 top-[48px] h-[96px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Grand Vista</div>
                 <div class="text-[10px] text-stone-500 truncate">9:00 AM · Maria L.</div>
               </div>
-              <div class="absolute left-1 right-1 top-[180px] h-[108px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[240px] h-[144px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Move-in · 4521 W Sahara</div>
                 <div class="text-[10px] text-stone-500 truncate">12:00 PM · Jason + 1</div>
               </div>
-              <div class="absolute left-1 right-1 top-[324px] h-[72px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[432px] h-[96px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Window · Patel residence</div>
                 <div class="text-[10px] text-stone-500 truncate">3:00 PM · Jason</div>
               </div>
             </div>
 
             <!-- Sat (today highlighted) -->
-            <div class="border-l border-line relative bg-brand-tint/15" style="height:432px">
-              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_35px,#EEF2F0_36px)] bg-[length:100%_36px]"></div>
+            <div class="border-l border-line relative bg-brand-tint/15" style="height:576px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_47px,#EEF2F0_48px)] bg-[length:100%_48px]"></div>
               <!-- now indicator at ~3:00pm -->
-              <div class="absolute left-0 right-0 z-10 flex items-center" style="top:252px">
+              <div class="absolute left-0 right-0 z-10 flex items-center" style="top:336px">
                 <div class="w-2 h-2 rounded-full bg-rose-500 -ml-1"></div>
                 <div class="flex-1 h-px bg-rose-500"></div>
               </div>
-              <div class="absolute left-1 right-1 top-[216px] h-[36px] rounded-md bg-brand text-white border-l-[3px] border-white p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[288px] h-[48px] rounded-md bg-brand text-white border-l-[3px] border-white p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-[11px] truncate">Window · Echo Family</div>
                 <div class="text-[10px] opacity-80 truncate">2:00 PM · Maria · IN PROGRESS</div>
               </div>
-              <div class="absolute left-1 right-1 top-[288px] h-[72px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+              <div class="absolute left-1 right-1 top-[384px] h-[96px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
                 <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Aria Grand</div>
                 <div class="text-[10px] text-stone-500 truncate">4:00 PM · Jason · Recurring</div>
               </div>
             </div>
 
             <!-- Sun (closed) -->
-            <div class="border-l border-line relative bg-stone-50/60" style="height:432px">
+            <div class="border-l border-line relative bg-stone-50/60" style="height:576px">
               <div class="absolute inset-0 grid place-items-center text-stone-300">
                 <span class="text-[10px] uppercase tracking-wider font-bold">Closed</span>
               </div>
