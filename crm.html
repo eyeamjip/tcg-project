@@ -166,19 +166,22 @@
   /* Collapse toggle button (floating on right edge of sidebar) */
   .sb-toggle {
     position: absolute;
-    right: -12px;
-    top: 64px;
-    width: 24px; height: 24px;
+    right: -14px;
+    /* Aligned with the "Workspace" section label vertically.
+       Was top: 64px which got clipped by the sticky topbar at 125% scale. */
+    top: 8rem;
+    width: 28px; height: 28px;
     border-radius: 999px;
     background: #fff;
     border: 1px solid #E2E8E5;
     color: #4a5b56;
     display: grid; place-items: center;
     box-shadow: 0 2px 8px rgba(8,80,65,.10);
-    z-index: 20;
+    z-index: 40; /* above sticky topbar (z-30) */
     transition: transform 220ms, color .15s, background .15s;
   }
-  .sb-toggle:hover { color: #0F6E56; background: #F7F9F8; }
+  .sb-toggle:hover { color: #0F6E56; background: #F7F9F8; border-color: #0F6E56; }
+  .sb-toggle svg { width: 16px; height: 16px; }
   .sidebar.is-collapsed .sb-toggle svg { transform: rotate(180deg); }
 
   /* Tile hover */
