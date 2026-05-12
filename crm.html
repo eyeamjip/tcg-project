@@ -836,6 +836,7 @@
           <button class="pill warn">Leads <span class="opacity-80">8</span></button>
           <button class="pill">Inactive <span class="opacity-60">12</span></button>
           <span class="w-px h-5 bg-line mx-1 shrink-0"></span>
+          <button class="pill">Residential <span class="opacity-60">18</span></button>
           <button class="pill">Window <span class="opacity-60">22</span></button>
           <button class="pill">Move in/out <span class="opacity-60">14</span></button>
           <button class="pill">Post-construction <span class="opacity-60">9</span></button>
@@ -875,6 +876,28 @@
                 </td>
                 <td class="px-3 hidden lg:table-cell text-stone-600 text-xs num">Today · 4:00 PM</td>
                 <td class="px-3 text-right num font-semibold text-rose-600">$485.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#0F6E56,#1D9E75)">RT</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Rivera Townhouse</div>
+                      <div class="text-xs text-stone-500 truncate">m.rivera@gmail.com · 702-555-9087</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="home" class="w-3 h-3"></i> Residential</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Bi-weekly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">Wed · 10:00 AM</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
                 <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
                 <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
               </tr>
@@ -1729,6 +1752,7 @@
           <div class="border-t border-line p-3">
             <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-2">Legend</div>
             <ul class="text-[11px] text-stone-600 space-y-1">
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-sky-200 border-l-[3px] border-sky-500"></span> Residential</li>
               <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-brand/30 border-l-[3px] border-brand"></span> Window</li>
               <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-violet-200 border-l-[3px] border-violet-500"></span> Move in/out</li>
               <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-amber-200 border-l-[3px] border-amber-500"></span> Post-construction</li>
@@ -2065,6 +2089,7 @@
         <button class="pill">Walk-in</button>
         <span class="w-px h-5 bg-line mx-1 shrink-0"></span>
         <button class="pill">All services</button>
+        <button class="pill">Residential</button>
         <button class="pill">Window</button>
         <button class="pill">Move</button>
         <button class="pill">Commercial</button>

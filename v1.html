@@ -159,6 +159,14 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 32px;
   }
+  /* Residential = hero card, spans full grid width.
+     UX rationale: it's the broadest/highest-LTV service (recurring residential).
+     Featuring it establishes visual hierarchy (Gestalt: prominence by size). */
+  .service-card.residential { grid-column: 1 / -1; }
+  .service-card.residential .photo { aspect-ratio: 21/9; }
+  @media (max-width: 768px) {
+    .service-card.residential .photo { aspect-ratio: 16/10; }
+  }
   .service-card {
     background: var(--paper);
     border: 1px solid var(--line);
@@ -197,6 +205,7 @@
   .service-card.move .photo { background-image: url('https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?w=900&q=80'); }
   .service-card.post .photo { background-image: url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=900&q=80'); }
   .service-card.commercial .photo { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80'); }
+  .service-card.residential .photo { background-image: url('https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1600&q=80'); }
 
   /* Why us */
   .why { background: var(--paper); }
@@ -662,7 +671,7 @@
       <div class="hero-grid">
         <div>
           <span class="eyebrow">Las Vegas · Est. 2022</span>
-          <h1 style="margin-top:18px;">You call, we <em>Clean</em>.</h1>
+          <h1 style="margin-top:18px;">You call,<br/>we <em>Clean</em>.</h1>
           <p class="lede">Las Vegas's trusted cleaning team for windows, move-outs, post-construction, and commercial spaces. Licensed, bonded, and insured since 2022.</p>
           <div class="hero-ctas">
             <a href="/get-a-quote" class="btn btn-primary btn-large" data-quote-trigger>Get a free quote →</a>
@@ -685,12 +694,20 @@
     <div class="container">
       <div class="section-head">
         <div>
-          <span class="eyebrow">What we clean</span>
-          <h2 style="margin-top:16px;">Four services. Done well.</h2>
+          <span class="eyebrow">Residential and Commercial cleaning</span>
+          <h2 style="margin-top:16px;">Five services. Done right.</h2>
         </div>
-        <p class="lede">We're a small Las Vegas team that handles four kinds of cleaning, and we do them right. Pick the one that fits your job.</p>
+        <p class="lede">From recurring home cleans to commercial accounts — pick the one that fits your job. Every service is licensed, bonded, and handled by Kervin & Jason's team directly.</p>
       </div>
       <div class="service-grid">
+        <a href="/residential-cleaning" class="service-card residential">
+          <div class="photo"></div>
+          <div class="body">
+            <h3>Residential cleaning</h3>
+            <p>Recurring or one-time deep cleans for homes and apartments. Weekly, bi-weekly, or monthly cadence — set it once and we show up. Kitchens, bathrooms, floors, surfaces, the works.</p>
+            <span class="arrow">Learn more →</span>
+          </div>
+        </a>
         <a href="/window-cleaning" class="service-card window">
           <div class="photo"></div>
           <div class="body">
@@ -898,6 +915,11 @@
       <p class="step-sub">Pick the service that fits best — you can mention extras in the next step.</p>
 
       <div class="service-grid" role="radiogroup" aria-label="Service type">
+        <button type="button" class="service-tile" data-service="residential">
+          <span class="tile-icon">🏠</span>
+          <div class="tile-title">Residential</div>
+          <div class="tile-sub">Recurring or one-time home cleaning</div>
+        </button>
         <button type="button" class="service-tile" data-service="window">
           <span class="tile-icon">🪟</span>
           <div class="tile-title">Window cleaning</div>
@@ -999,6 +1021,38 @@
           <label class="radio-option"><input type="radio" name="role" value="General contractor" /> General contractor</label>
           <label class="radio-option"><input type="radio" name="role" value="Builder / developer" /> Builder / developer</label>
           <label class="radio-option"><input type="radio" name="role" value="Homeowner" /> Homeowner</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>How often do you want service?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Weekly" /> Weekly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Bi-weekly" /> Every 2 weeks</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Monthly" /> Monthly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="One-time" /> One-time deep clean</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Any specific focus areas? <span style="color: var(--ink-mute); font-weight: 400;">(optional)</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean kitchen" /> Deep clean the kitchen</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean bathrooms" /> Deep clean the bathrooms</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside oven" /> Inside the oven</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside fridge" /> Inside the fridge</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Interior windows" /> Interior windows</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Laundry / change linens" /> Laundry / change linens</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Pets at home?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="pets" value="No pets" /> No pets</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Dogs" /> Yes — dogs</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Cats" /> Yes — cats</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Other" /> Yes — other</label>
         </div>
       </div>
 
@@ -1170,6 +1224,7 @@
       el.style.display = el.dataset.showFor === formState.service ? 'block' : 'none';
     });
     const subs = {
+      residential: 'A few details about your home so we can lock in the right cadence and crew.',
       window: 'A few details about your windows so we can size the quote accurately.',
       move: 'A few details about the unit so we can quote a proper move clean.',
       'post-construction': 'A few details about the project so we can phase the cleanup.',
