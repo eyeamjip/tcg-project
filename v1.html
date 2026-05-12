@@ -514,6 +514,19 @@
   .service-modal-bonus strong { display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: #7A5A00; margin-bottom: 6px; }
   .service-modal-bonus p { font-size: 15px; color: var(--ink); }
 
+  /* Inline page link near the top of the modal body (SEO funnel — also tells users a deeper page exists) */
+  .service-modal-page-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600;
+    color: var(--brand-dark);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--brand);
+    padding-bottom: 1px;
+    margin-bottom: 18px;
+    transition: color .15s, border-color .15s;
+  }
+  .service-modal-page-link:hover { color: var(--brand); border-bottom-color: var(--brand-dark); }
+
   .service-modal-cta {
     padding: 18px 24px;
     background: var(--paper);
@@ -1097,6 +1110,7 @@
   </div>
   <div class="service-modal-body">
     <p class="service-modal-lede" id="sm-lede"></p>
+    <a class="service-modal-page-link" id="sm-page-link" href="#">See the full service page →</a>
 
     <h3>What's included</h3>
     <ul id="sm-included"></ul>
@@ -1656,6 +1670,7 @@
   const serviceDetails = {
     residential: {
       title: 'Residential cleaning',
+      pageUrl: '/residential-cleaning',
       image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1800&q=80',
       lede: 'Recurring or one-time house cleans. Set the cadence — weekly, bi-weekly, or monthly — and we show up. Same team every visit so we get to know your home.',
       included: [
@@ -1675,6 +1690,7 @@
     },
     window: {
       title: 'Window cleaning',
+      pageUrl: '/window-cleaning',
       image: 'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=1800&q=80',
       lede: 'Streak-free interior and exterior windows. One-time, quarterly, or twice a year. We do residential and commercial — single story, two-story, storefronts, the works.',
       included: [
@@ -1693,6 +1709,7 @@
     },
     move: {
       title: 'Move in / move out cleaning',
+      pageUrl: '/move-in-move-out-cleaning',
       image: 'https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?w=1800&q=80',
       lede: 'Full-unit prep before you hand over the keys — or before you take them. Deposit-ready guaranteed. We coordinate with leasing agents directly if needed.',
       included: [
@@ -1713,6 +1730,7 @@
     },
     'post-construction': {
       title: 'Post-construction cleanup',
+      pageUrl: '/post-construction-cleaning',
       image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1800&q=80',
       lede: 'Drywall dust, sticker residue, paint splatters, debris. We turn a finished job into a move-in-ready space. We coordinate with your GC\'s schedule.',
       included: [
@@ -1733,6 +1751,7 @@
     },
     commercial: {
       title: 'Commercial cleaning',
+      pageUrl: '/commercial-cleaning',
       image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1800&q=80',
       lede: 'Recurring service for offices, retail, restaurants, and salons. We work around your hours — after-hours scheduling included free. Day-porter service available.',
       included: [
@@ -1765,6 +1784,12 @@
     document.getElementById('sm-bonus').textContent = data.bonus;
     // Hero photo with gradient overlay (CSS handles overlay via ::before)
     document.getElementById('sm-hero').style.backgroundImage = `url('${data.image}')`;
+    // Page link (full SEO-optimized service page — built in Phase 2 WordPress)
+    const pageLink = document.getElementById('sm-page-link');
+    if (pageLink) {
+      pageLink.href = data.pageUrl || '#';
+      pageLink.textContent = `See the full ${data.title} page →`;
+    }
     // CTA: open quote modal pre-filled with this service
     const cta = document.getElementById('sm-quote-btn');
     cta.dataset.serviceKey = data.quoteKey || key;
