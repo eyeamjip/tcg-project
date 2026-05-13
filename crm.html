@@ -192,9 +192,11 @@
       width: 32px;
       height: 32px;
       right: -16px;
-      /* Override desktop's logo-row position — on mobile, sit next to the Overview row instead.
-         Aligns with Overview's vertical center in both collapsed and expanded states (~114px). */
-      top: 7rem;
+      /* Override desktop's logo-row position — on mobile, sit next to the main H1
+         "Good afternoon, Kervin." headline. Calc: subnav (3.5rem topbar + 2.75rem subnav)
+         + view pt-6 = ~7.75rem viewport y for H1 top; sidebar sticks at 3.5rem viewport,
+         so chevron top within sidebar = ~4.25rem to land at H1 height. */
+      top: 4rem;
     }
     .sb-toggle svg { width: 18px; height: 18px; }
 
