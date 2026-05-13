@@ -207,29 +207,69 @@
   .service-card.commercial .photo { background-image: url('assets/photos/commercial.webp'); }
   .service-card.residential .photo { background-image: url('assets/photos/residential.webp'); }
 
-  /* Why us */
+  /* Why us — centered vertical flow:
+     head (eyebrow + h2 + description) → team photo (centered) → reasons grid (2-col).
+     Restructured from the old asymmetric 2-col layout so the team photo
+     gets prime real estate as the trust anchor, mirroring V2's pattern. */
   .why { background: var(--paper); }
-  .why-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
+  .why-head {
+    max-width: 720px;
+    margin: 0 auto 40px;
+    text-align: center;
   }
-  .why h2 {
+  .why-head h2 {
     font-size: clamp(36px, 4.5vw, 56px);
     font-weight: 700;
-    margin-bottom: 24px;
+    margin: 16px 0 20px;
   }
-  .why p { font-size: 17px; margin-bottom: 32px; max-width: 520px; }
-  .why ul { list-style: none; display: grid; gap: 14px; }
-  .why li {
+  .why-head p {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 620px;
+    margin: 0 auto;
+  }
+  .why-team-photo {
+    max-width: 480px;
+    margin: 0 auto 56px;
+    text-align: center;
+  }
+  .why-team-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 24px 56px rgba(0,0,0,0.10), 0 8px 22px rgba(0,0,0,0.06);
+    display: block;
+  }
+  .why-team-caption {
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--ink-mute);
+  }
+  .why-team-caption strong {
+    display: block;
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 18px;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
+  .why-list {
+    max-width: 820px;
+    margin: 0 auto;
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 40px;
+  }
+  .why-list li {
     display: flex;
     gap: 14px;
     align-items: flex-start;
     color: var(--ink);
     font-size: 16px;
+    line-height: 1.45;
   }
-  .why li::before {
+  .why-list li::before {
     content: "";
     width: 22px;
     height: 22px;
@@ -242,12 +282,10 @@
     background-repeat: no-repeat;
     background-position: center;
   }
-  .why-photo {
-    aspect-ratio: 5/6;
-    border-radius: 4px;
-    background:
-      linear-gradient(135deg, rgba(15,110,86,0.1), rgba(15,110,86,0.0)),
-      url('assets/photos/team.webp') center/cover var(--brand-light);
+  @media (max-width: 768px) {
+    .why-list { grid-template-columns: 1fr; }
+    .why-team-photo { max-width: 100%; margin-bottom: 40px; }
+    .why-team-caption strong { font-size: 17px; }
   }
 
   /* Service area */
@@ -378,7 +416,7 @@
   @media (max-width: 900px) {
     .section { padding: 64px 0; }
     nav.primary { display: none; }
-    .hero-grid, .why-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; }
     .service-grid, .review-grid { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr 1fr; }
     .container { padding: 0 20px; }
@@ -999,21 +1037,29 @@
 
   <section class="section why" id="why">
     <div class="container">
-      <div class="why-grid">
-        <div>
-          <span class="eyebrow">Why pick us</span>
-          <h2 style="margin-top:16px;">Local. Careful. Honest pricing.</h2>
-          <p>We started The Clean Guys with one goal: do clean, careful work and treat every job like it's our own place. That means showing up on time, paying attention to the small things, and pricing our work honestly.</p>
-          <ul>
-            <li>Licensed, bonded, and insured — full coverage on every job</li>
-            <li>Locally owned by Kervin and Jason, not a franchise</li>
-            <li>ASL proficient — clear communication with every client</li>
-            <li>Flexible scheduling, including outside business hours</li>
-            <li>Cards, Zelle, and Venmo accepted</li>
-          </ul>
-        </div>
-        <div class="why-photo" aria-hidden="true"></div>
+      <div class="why-head">
+        <span class="eyebrow">Why pick us</span>
+        <h2>Local. Careful. Honest pricing.</h2>
+        <p>We started The Clean Guys with one goal: do clean, careful work and treat every job like it's our own place. That means showing up on time, paying attention to the small things, and pricing our work honestly.</p>
       </div>
+
+      <!-- Team photo — visual proof of "the actual people doing the work" -->
+      <div class="why-team-photo">
+        <img src="assets/photos/team.webp" alt="Kervin and Jason, owners of The Clean Guys" loading="lazy" />
+        <div class="why-team-caption">
+          <strong>Kervin &amp; Jason</strong>
+          Owners — you'll meet them on the first job
+        </div>
+      </div>
+
+      <ul class="why-list">
+        <li>Licensed, bonded, and insured — full coverage on every job</li>
+        <li>Locally owned by Kervin and Jason, not a franchise</li>
+        <li>ASL proficient — clear communication with every client</li>
+        <li>Flexible scheduling, including outside business hours</li>
+        <li>Cards, Zelle, and Venmo accepted</li>
+        <li>Same team every visit for recurring clients</li>
+      </ul>
     </div>
   </section>
 

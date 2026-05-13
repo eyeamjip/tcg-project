@@ -212,7 +212,7 @@
   .why { background: var(--bg); padding: 100px 0; }
   .why-head {
     max-width: 720px;
-    margin: 0 auto 64px;
+    margin: 0 auto 40px;
     text-align: center;
   }
   .why-head h2 {
@@ -221,6 +221,39 @@
     margin: 16px 0 20px;
   }
   .why-head p { font-size: 18px; }
+
+  /* Team photo — Kervin & Jason, the trust anchor between the value statement
+     and the supporting reasons. Centered, framed, with name+role caption. */
+  .why-team-photo {
+    max-width: 520px;
+    margin: 0 auto 64px;
+    text-align: center;
+  }
+  .why-team-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px rgba(5,40,33,0.18), 0 10px 28px rgba(5,40,33,0.10);
+    display: block;
+  }
+  .why-team-caption {
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    letter-spacing: 0.01em;
+  }
+  .why-team-caption strong {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  @media (max-width: 640px) {
+    .why-team-photo { max-width: 100%; margin-bottom: 48px; }
+    .why-team-caption strong { font-size: 18px; }
+  }
   .why-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1105,6 +1138,16 @@
       <h2>Professional service, backed by real care.</h2>
       <p>We started The Clean Guys with one goal: do clean, careful work and treat every job like it's our own place. Showing up on time, paying attention to the small things, and pricing our work honestly.</p>
     </div>
+
+    <!-- Team photo — visual proof of "the actual people doing the work" -->
+    <div class="why-team-photo">
+      <img src="assets/photos/team.webp" alt="Kervin and Jason, owners of The Clean Guys" loading="lazy" />
+      <div class="why-team-caption">
+        <strong>Kervin &amp; Jason</strong>
+        Owners — you'll meet them on the first job
+      </div>
+    </div>
+
     <div class="why-grid">
       <div class="why-card">
         <div class="icon">
