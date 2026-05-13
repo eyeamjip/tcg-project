@@ -604,7 +604,7 @@
   .service-modal-cta .btn {
     background: var(--brand);
     color: #fff;
-    padding: 14px 24px;
+    padding: 14px 28px;
     border: none;
     border-radius: 8px;
     font-size: 15px;
@@ -612,8 +612,8 @@
     cursor: pointer;
     font-family: inherit;
     transition: background .15s;
-    flex: 1;
-    min-width: 200px;
+    /* Button sizes to its content on desktop. Mobile media query below
+       restores width:100% for full-width thumb-friendly tap target. */
   }
   .service-modal-cta .btn:hover { background: var(--brand-dark); }
   .service-modal-cta .phone-link {
