@@ -2,7 +2,7 @@
 
 **Client:** Kervin & Jason · 702-551-4878 · Contact@thecleanguyslv.com  
 **Live site:** https://thecleanguyslv.com (currently Google Sites — replacing it)  
-**Previews:** https://eyeamjip.github.io/tcg-preview/ (V1, V2, CRM)  
+**Previews:** https://eyeamjip.github.io/tcg-project/ (V1, V2, CRM) — *renamed from `tcg-preview` on 2026-05-13*  
 **Stack:** WordPress 6+ · Kadence theme + child · Rank Math · WPForms · LiteSpeed/WP Rocket  
 **Last session:** 2026-05-13 — TCG CRM mobile UX overhaul
 
@@ -107,13 +107,13 @@ Document each answer in `docs/decisions_log.md` as they're resolved.
 
 ---
 
-## Adjacent project — TCG CRM
+## Sibling project — TCG CRM (now in the same monorepo)
 
-Separate project at `Z:\AI Brain\projects\TCG-CRM\`. Internal admin system for Kervin & Jason. **Not part of this WordPress build** — connects later via quote form webhook (form submissions → CRM leads).
+Lives at `..\crm\` (sibling folder inside the `tcg-project` monorepo, as of 2026-05-13). Internal admin system for Kervin & Jason. **Not part of this WordPress build** — connects later via quote form webhook (form submissions → CRM leads).
 
-- Prototype: `Z:\AI Brain\projects\TCG-CRM\prototypes\index.html`
-- Live preview: https://eyeamjip.github.io/tcg-preview/crm.html
-- Status: 7 of 9 modules built. Recommended start: after marketing site Phase 1 ships (~60–90 days post-launch)
+- Prototype source: `Z:\AI Brain\projects\tcg-project\crm\prototypes\index.html`
+- Live preview: https://eyeamjip.github.io/tcg-project/crm.html
+- Status: 7 of 9 modules built. Recommended start: after marketing site Phase 1 ships (~60–90 days post-launch).
 
 ---
 

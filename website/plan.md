@@ -10,6 +10,8 @@
 
 ## Current state (as of 2026-05-13)
 
+> **🆕 Monorepo restructure (2026-05-13 evening):** Project moved into the `tcg-project` monorepo. New path: `Z:\AI Brain\projects\tcg-project\website\` (this file is now `tcg-project/website/plan.md`). Sibling: `tcg-project/crm/` (the TCG CRM). Preview HTML served from `tcg-project/docs/` at **https://eyeamjip.github.io/tcg-project/**. GitHub repo renamed `tcg-preview` → `tcg-project`. Old `Z:\AI Brain\projects\TheCleanGuys\` folder archived at `..\TheCleanGuys_archive_2026-05-13\` (delete after monorepo verified).
+
 **Phase 0:** ~80% complete. Repo structure, all reference docs imported, 10 per-page copy files split, decisions log scaffolded, SEO keyword map drafted. **Pending:** git init (D7), local WordPress dev env (D2).
 
 **Phase 1:** Pre-work only. Child theme `style.css` + `functions.php` skeletons exist locally; Kadence parent + plugins not installed (blocked on D2 hosting/dev env).

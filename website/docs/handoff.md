@@ -6,6 +6,31 @@
 
 ---
 
+## 🆕 Where it lives now (2026-05-13)
+
+This project has been consolidated into a **monorepo**:
+
+- **Local path:** `Z:\AI Brain\projects\tcg-project\website\` (was `Z:\AI Brain\projects\TheCleanGuys\`)
+- **GitHub:** `github.com/eyeamjip/tcg-project` (renamed from `tcg-preview`)
+- **Live preview URL:** `https://eyeamjip.github.io/tcg-project/` (was `tcg-preview`)
+- **Sibling folders inside the monorepo:**
+  - `..\crm\` — TCG CRM prototype (was `Z:\AI Brain\projects\TCG-CRM\`)
+  - `..\docs\` — GitHub Pages preview HTML (was `..\TheCleanGuys\.gh-preview\`)
+- **Archived (safe to delete after monorepo verified):**
+  - `Z:\AI Brain\projects\TheCleanGuys_archive_2026-05-13\`
+  - `Z:\AI Brain\projects\TCG-CRM_archive_2026-05-13\`
+
+**New preview workflow:**
+```powershell
+# Edit source → copy to docs/ → commit + push from monorepo root
+cp website/prototypes/homepage-v1-editorial.html ../docs/v1.html
+cp website/prototypes/homepage-v2-bold.html      ../docs/v2.html
+cp ../crm/prototypes/index.html                  ../docs/crm.html
+cd .. && git add docs/ && git commit -m "Preview: …" && git push
+```
+
+---
+
 ## Where the project is right now
 
 **Done — all the prep work that doesn't need a live WordPress install:**
