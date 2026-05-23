@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://thecleanguyslv.com/commercial-cleaning#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does commercial cleaning cost in Las Vegas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most small office and retail spaces in Las Vegas run $150 to $350 per recurring visit, depending on square footage and frequency. Restaurants and larger spaces are quoted on walkthrough. Recurring clients always get a better rate than one-time service."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can you clean after business hours?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Most of our office and retail clients are cleaned after close or before open. We have a key-and-alarm protocol and can work around your schedule."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I have to sign a long-term contract?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Our commercial agreements are month-to-month. You can pause or cancel with 30 days' notice — no auto-renewals, no cancellation fees."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are your cleaners background-checked?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every team member is background-checked and trained on our process. We carry full liability insurance and a janitorial bond."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you handle restaurant kitchen cleaning?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We clean dining rooms, restrooms, glass, and front-of-house. Kitchen hood and exhaust cleaning is a specialized trade — we partner with local hood-cleaning specialists and can refer you."
+      }
+    }
+  ]
+}

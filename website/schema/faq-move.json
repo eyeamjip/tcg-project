@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://thecleanguyslv.com/move-in-move-out-cleaning#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does move out cleaning cost in Las Vegas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most one-bedroom apartments run $250 to $400. Three-bedroom homes typically run $400 to $700. Larger or heavily soiled spaces are quoted on walkthrough. Get a written quote in advance so there are no surprises."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will your cleaning meet my landlord's checklist?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Send us your landlord's or property manager's move-out checklist when you book and we'll work straight from it. If anything is missed when they inspect, we come back and fix it free."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I book move out cleaning the day I'm moving?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We recommend booking 3 to 7 days out, but we keep some same-week capacity open for last-minute moves. Call or text 702-551-4878 if you need us this week."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you bring your own supplies?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — all equipment, vacuums, and cleaning products. You don't need to leave anything behind."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you clean inside the oven and fridge?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, both are included in every move cleaning by default. Some companies charge extra for these — we don't."
+      }
+    }
+  ]
+}

@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Trusted Las Vegas cleaning company. Window, move in/out, post construction & commercial cleaning. Licensed, bonded, insured. Get a free quote today." />
+<title>Las Vegas Cleaning Services | Window, Move-Out & More — The Clean Guys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --brand: #0F6E56;
+    --brand-dark: #073A2F;
+    --brand-darker: #052821;
+    --brand-light: #E1F5EE;
+    --accent: #1D9E75;
+    --accent-soft: #E1F5EE;
+    --ink: #111111;
+    --ink-soft: #555;
+    --ink-mute: #888;
+    --line: #E5E5E0;
+    --bg: #F7F6F2;
+    --paper: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  /* Prevent any accidental horizontal overflow from causing the whole page
+     to scroll sideways on mobile. `clip` preferred over `hidden` so it
+     preserves sticky positioning of the header. Falls back to `hidden`. */
+  html, body { overflow-x: hidden; overflow-x: clip; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  h1, h2, h3, h4 { font-family: 'Inter', sans-serif; letter-spacing: -0.025em; line-height: 1.05; }
+  p { color: var(--ink-soft); }
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--brand);
+  }
+
+  /* Header (dark bar) */
+  header.site {
+    background: var(--brand-darker);
+    color: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  header.site .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+    gap: 24px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 19px;
+    color: var(--paper);
+    letter-spacing: -0.02em;
+  }
+  .logo svg { width: 28px; height: 28px; color: var(--paper); }
+  .logo .brand-word { color: var(--accent); }
+  nav.primary { display: flex; gap: 32px; font-size: 15px; font-weight: 500; }
+  nav.primary a { color: rgba(255,255,255,0.78); transition: color .15s; }
+  nav.primary a:hover, nav.primary a.active { color: var(--paper); }
+  nav.primary a.active { border-bottom: 2px solid var(--accent); padding-bottom: 6px; }
+  .header-cta { display: flex; align-items: center; gap: 14px; }
+  .header-phone {
+    color: var(--paper);
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--paper); color: var(--brand-dark); }
+  .btn-primary:hover { background: var(--accent-soft); color: var(--brand-darker); }
+  .btn-secondary { background: transparent; color: var(--paper); border-color: rgba(255,255,255,0.4); }
+  .btn-secondary:hover { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+  .btn-large { padding: 18px 32px; font-size: 16px; }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    color: var(--paper);
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at top right, rgba(29,158,117,0.12) 0%, transparent 55%),
+      linear-gradient(135deg, var(--brand-darker) 0%, var(--brand-dark) 100%);
+    background-color: var(--brand-darker);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 56px;
+    align-items: center;
+    padding: 100px 0 110px;
+  }
+  .hero h1 {
+    font-size: clamp(44px, 5.6vw, 84px);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+  }
+  /* "clean" highlighted in mint green — high contrast on dark hero */
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero .lede {
+    color: rgba(255,255,255,0.85);
+    font-size: 19px;
+    margin-bottom: 36px;
+  }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-photo {
+    position: relative;
+    aspect-ratio: 4/5;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: var(--brand-dark);
+    /* Photo: TCG crew member mid-squeegee, water droplets, residential window.
+       Local file in assets/photos/ — replaced stock photo with brand-shot generated photo. */
+    background-image:
+      linear-gradient(180deg, rgba(5,40,33,0) 0%, rgba(5,40,33,0.25) 100%),
+      url('assets/photos/hero-v2.webp');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.2);
+  }
+  .hero-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    pointer-events: none;
+  }
+  .hero > .container { position: relative; z-index: 1; }
+
+  /* Trust band */
+  .trust-band {
+    background: var(--brand-dark);
+    color: var(--paper);
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .trust-band .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .trust-band .item { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.85); }
+  .trust-band .item::before { content: "✓"; color: var(--accent); font-weight: 800; }
+
+  /* Stats */
+  .stats {
+    background: var(--paper);
+    padding: 80px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+  .stat .num {
+    display: block;
+    font-size: clamp(44px, 5vw, 64px);
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .stat .label {
+    display: block;
+    margin-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-weight: 600;
+  }
+
+  /* Why us */
+  .why { background: var(--bg); padding: 100px 0; }
+  .why-head {
+    max-width: 720px;
+    margin: 0 auto 40px;
+    text-align: center;
+  }
+  .why-head h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 800;
+    margin: 16px 0 20px;
+  }
+  .why-head p { font-size: 18px; }
+
+  /* Team photo — Kervin & Jason, the trust anchor between the value statement
+     and the supporting reasons. Centered, framed, with name+role caption. */
+  .why-team-photo {
+    max-width: 520px;
+    margin: 0 auto 64px;
+    text-align: center;
+  }
+  .why-team-photo img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px rgba(5,40,33,0.18), 0 10px 28px rgba(5,40,33,0.10);
+    display: block;
+  }
+  .why-team-caption {
+    margin-top: 20px;
+    text-align: center;
+  }
+  /* Eyebrow above the names — small uppercase label, brand teal, matches
+     the existing .eyebrow pattern used in section headers throughout. */
+  .why-team-eyebrow {
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.20em;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--brand);
+    margin-bottom: 8px;
+  }
+  .why-team-caption strong {
+    display: block;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  @media (max-width: 640px) {
+    .why-team-photo { max-width: 100%; margin-bottom: 48px; }
+    .why-team-caption strong { font-size: 18px; }
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .why-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 36px;
+    transition: all .2s;
+  }
+  .why-card:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(0,0,0,0.06); border-color: var(--brand); }
+  .why-card .icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: var(--brand-light);
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .why-card .icon svg { width: 28px; height: 28px; }
+  .why-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+  .why-card p { font-size: 15px; }
+
+  /* Services */
+  .services { padding: 100px 0; background: var(--paper); }
+  .services-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 32px;
+    margin-bottom: 56px;
+    flex-wrap: wrap;
+  }
+  .services-head h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 800;
+    max-width: 920px;
+    /* Keep headlines like "Five services. Done right." on one line on desktop.
+       Mobile media query below restores normal wrapping. */
+    white-space: nowrap;
+  }
+  .services-head .lede {
+    font-size: 17px;
+    max-width: 380px;
+    color: var(--ink-soft);
+  }
+  .service-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  /* Residential = hero card, spans both columns.
+     UX rationale: it's the broadest service (general recurring home cleaning),
+     so it earns top visual hierarchy. 2x2 grid below preserves Gestalt symmetry. */
+  .service-card.residential { grid-column: 1 / -1; min-height: 320px; }
+  .service-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px;
+    aspect-ratio: 16/11;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--brand-dark);
+    cursor: pointer;
+    isolation: isolate;
+    transition: transform .25s;
+  }
+  .service-card:hover { transform: translateY(-4px); }
+  .service-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(5,40,33,0.95) 100%);
+    z-index: 1;
+  }
+  .service-card .body {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 32px;
+    color: var(--paper);
+    z-index: 2;
+  }
+  .service-card .tag {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--brand-dark);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .service-card h3 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+  .service-card p {
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    margin-bottom: 14px;
+    max-width: 460px;
+  }
+  .service-card .arrow { color: var(--accent); font-weight: 700; font-size: 14px; }
+  .service-card.window { background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('assets/photos/window.webp'); }
+  .service-card.move { background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('assets/photos/move.webp'); }
+  .service-card.post { background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('assets/photos/post-construction.webp'); }
+  .service-card.commercial { background-image: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.4)), url('assets/photos/commercial.webp'); }
+  .service-card.residential { background-image: linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.55)), url('assets/photos/residential.webp'); }
+
+  /* Service area band */
+  .area {
+    background: var(--brand-darker);
+    color: var(--paper);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .area::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(29,158,117,0.15) 0%, transparent 70%);
+  }
+  .area .container { position: relative; z-index: 1; }
+  .area h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 800;
+    max-width: 760px;
+    margin: 16px 0 24px;
+  }
+  .area .lede { color: rgba(255,255,255,0.8); max-width: 600px; font-size: 17px; }
+  .area-cities {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px 32px;
+    margin-top: 40px;
+    list-style: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+  }
+  .area-cities li::before { content: "📍 "; }
+
+  /* Reviews */
+  .reviews { padding: 100px 0; background: var(--bg); }
+  .reviews-head { text-align: center; max-width: 640px; margin: 0 auto 56px; }
+  .reviews-head h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 800;
+    margin: 16px 0 16px;
+  }
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .review-card {
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 32px;
+    border: 1px solid var(--line);
+  }
+  .stars { color: #F5A623; letter-spacing: 2px; font-size: 18px; margin-bottom: 14px; }
+  .review-quote { font-size: 17px; color: var(--ink); margin-bottom: 24px; line-height: 1.5; }
+  .review-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--ink-mute);
+    font-size: 14px;
+  }
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--brand-light);
+    color: var(--brand);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .review-meta strong { color: var(--ink); display: block; font-weight: 600; }
+
+  /* FAQ */
+  .faq { padding: 100px 0; background: var(--paper); }
+  .faq-wrap { max-width: 820px; margin: 0 auto; }
+  .faq h2 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 800;
+    text-align: center;
+    margin: 16px 0 56px;
+  }
+  details.faq-item {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 12px;
+  }
+  details.faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  details.faq-item summary::-webkit-details-marker { display: none; }
+  details.faq-item summary::after {
+    content: "+";
+    width: 32px; height: 32px;
+    background: var(--brand);
+    color: var(--paper);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 400;
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  details.faq-item[open] summary::after { transform: rotate(45deg); background: var(--accent); color: var(--paper); }
+  details.faq-item p { margin-top: 16px; font-size: 16px; }
+
+  /* Final CTA */
+  .cta-final {
+    background: var(--brand);
+    color: var(--paper);
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-final::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 60%);
+  }
+  .cta-final .container { position: relative; z-index: 1; text-align: center; }
+  .cta-final h2 {
+    font-size: clamp(44px, 6vw, 80px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-final p { color: rgba(255,255,255,0.9); font-size: 19px; max-width: 600px; margin: 0 auto 36px; }
+  .cta-final .btn-primary { background: var(--paper); color: var(--brand-dark); }
+  .cta-final .btn-primary:hover { background: var(--accent-soft); color: var(--brand-darker); }
+  .cta-final .or { display: block; margin-top: 18px; color: rgba(255,255,255,0.85); font-size: 16px; }
+  .cta-final .or a { color: var(--paper); border-bottom: 1px solid rgba(255,255,255,0.5); font-weight: 600; }
+
+  /* Footer */
+  footer.site {
+    background: var(--brand-darker);
+    color: rgba(255,255,255,0.7);
+    padding: 64px 0 32px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+  }
+  .footer-grid h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--paper); margin-bottom: 16px; font-weight: 700; }
+  .footer-grid ul { list-style: none; display: grid; gap: 10px; }
+  .footer-grid a { color: rgba(255,255,255,0.7); font-size: 15px; }
+  .footer-grid a:hover { color: var(--paper); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    nav.primary { display: none; }
+    .header-phone { display: none; }
+    .hero-grid { grid-template-columns: 1fr; gap: 40px; padding: 64px 0 80px; }
+    .hero-photo { aspect-ratio: 5/4; max-width: 480px; margin: 0 auto; width: 100%; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 20px; }
+    .why-grid, .service-grid, .review-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .container { padding: 0 20px; }
+
+    /* Tighten the reviews section on mobile — was floating in too much empty space */
+    .why { padding-bottom: 40px; }
+    .reviews { padding: 32px 0 72px; }
+    .reviews-head { margin-bottom: 28px; }
+    .reviews-head h2 { margin: 8px 0 12px; }
+
+    /* Allow services heading to wrap naturally on mobile (won't fit on one line at any font size below ~900px) */
+    .services-head h2 { white-space: normal; max-width: 100%; }
+  }
+
+  /* === Service detail modal ===
+     UX rationale: card click opens detail modal (no nav, low bounce);
+     contextual "Get a quote for THIS service" CTA pre-fills the quote form.
+     V2-bold styling: dark hero, mint accent, larger typography. */
+  .service-modal {
+    border: none;
+    padding: 0;
+    background: var(--paper);
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.18);
+    max-width: 1320px;
+    width: calc(100vw - 32px);
+    max-height: min(95vh, 1000px);
+    margin: auto;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .service-modal:not([open]) { display: none; }
+  .service-modal[open] { display: flex; flex-direction: column; animation: qmIn 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+  .service-modal::backdrop { background: rgba(5, 40, 33, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .service-modal[open]::backdrop { animation: qmFade 0.25s ease-out; }
+
+  .service-modal-close {
+    position: absolute; top: 18px; right: 18px; z-index: 10;
+    background: rgba(255,255,255,0.92); border: none; cursor: pointer;
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--ink); transition: background .15s, transform .15s;
+    backdrop-filter: blur(8px);
+  }
+  .service-modal-close:hover { background: var(--paper); transform: rotate(90deg); }
+
+  .service-modal-hero {
+    position: relative;
+    /* Desktop: cinematic 4:1 — saves vertical space so body content fits without scrolling.
+       Mobile media query restores 16:10 portrait below 640px. */
+    aspect-ratio: 4/1;
+    background-size: cover;
+    background-position: center;
+    background-color: var(--brand-darker);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 32px 44px 28px;
+    color: #fff;
+  }
+  .service-modal-hero::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(5,40,33,0.85) 100%);
+  }
+  .service-modal-hero > * { position: relative; z-index: 1; }
+  .service-modal-eyebrow {
+    text-transform: uppercase; letter-spacing: 0.20em;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent); margin-bottom: 10px;
+    display: inline-block;
+  }
+  .service-modal-title {
+    font-size: clamp(32px, 4.5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  .service-modal-body {
+    overflow-y: auto;
+    padding: 32px 44px 24px;
+    flex: 1;
+    line-height: 1.55;
+  }
+  .service-modal-lede {
+    font-size: 18px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  /* 2-column body layout on desktop — main col = spec, side col = conversion content.
+     UX: F-pattern reading hits price + audience faster than scrolling. */
+  .service-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  @media (min-width: 768px) {
+    .service-modal-grid {
+      grid-template-columns: 1.4fr 1fr;
+      gap: 44px;
+      align-items: start;
+    }
+    .service-modal-col-side h3:first-of-type { margin-top: 0; }
+  }
+  .service-modal-body h3 {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brand-dark);
+    margin: 28px 0 12px;
+  }
+  .service-modal-body h3:first-of-type { margin-top: 0; }
+  .service-modal-body ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 28px;
+  }
+  .service-modal-body ul li {
+    font-size: 15px;
+    color: var(--ink);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .service-modal-body ul li::before {
+    content: "";
+    width: 18px; height: 18px;
+    flex-shrink: 0; margin-top: 3px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231D9E75' stroke-width='3'><polyline points='20 6 9 17 4 12'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+  .service-modal-body .pricing-line {
+    font-size: 16px; color: var(--ink);
+    background: var(--brand-light);
+    padding: 16px 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--brand);
+  }
+  .service-modal-body .pricing-line strong { color: var(--brand-dark); font-weight: 800; }
+  .service-modal-bonus {
+    margin-top: 28px;
+    padding: 18px 20px;
+    background: #FFF6E5;
+    border-left: 4px solid #E5A800;
+    border-radius: 10px;
+  }
+  .service-modal-bonus strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: #7A5A00; margin-bottom: 6px; }
+  .service-modal-bonus p { font-size: 15px; color: var(--ink); }
+
+  /* Inline page link — SEO funnel signal + tells users a deeper page exists */
+  .service-modal-page-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700;
+    color: var(--brand-dark);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--brand);
+    padding-bottom: 1px;
+    margin-bottom: 20px;
+    transition: color .15s, border-color .15s;
+    letter-spacing: 0.01em;
+  }
+  .service-modal-page-link:hover { color: var(--brand); border-bottom-color: var(--brand-dark); }
+
+  .service-modal-cta {
+    padding: 20px 28px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .service-modal-cta .btn {
+    background: var(--brand);
+    color: #fff;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background .15s, transform .15s;
+    letter-spacing: 0.01em;
+    /* Button sizes to its content on desktop. Mobile media query below
+       restores width:100% for full-width thumb-friendly tap target. */
+  }
+  .service-modal-cta .btn:hover { background: var(--brand-dark); transform: translateY(-1px); }
+  .service-modal-cta .phone-link {
+    color: var(--ink-soft);
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .service-modal-cta .phone-link strong { color: var(--brand-dark); font-weight: 800; }
+
+  @media (max-width: 640px) {
+    .service-modal { width: 100vw; max-width: 100vw; height: 100vh; height: 100dvh; max-height: 100vh; border-radius: 0; }
+    .service-modal-hero { aspect-ratio: 16/10; padding: 22px 22px 20px; }
+    .service-modal-title { font-size: 28px; }
+    .service-modal-body { padding: 24px 22px 18px; }
+    .service-modal-body ul { grid-template-columns: 1fr; }
+    .service-modal-cta { padding: 16px 18px; flex-direction: column; align-items: stretch; }
+    .service-modal-cta .btn { width: 100%; }
+    .service-modal-cta .phone-link { text-align: center; }
+  }
+
+  /* === Quote modal === */
+  .quote-modal {
+    border: none;
+    padding: 0;
+    background: var(--paper);
+    border-radius: 16px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.18);
+    max-width: 640px;
+    width: calc(100vw - 32px);
+    max-height: min(92vh, 880px);
+    margin: auto;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .quote-modal:not([open]) { display: none; }
+  .quote-modal[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .quote-modal::backdrop {
+    background: rgba(5, 40, 33, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .quote-modal[open] { animation: qmIn 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+  .quote-modal[open]::backdrop { animation: qmFade 0.25s ease-out; }
+  @keyframes qmIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes qmFade { from { opacity: 0; } to { opacity: 1; } }
+  .quote-modal .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--bg);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background 0.15s, color 0.15s;
+    z-index: 2;
+  }
+  .quote-modal .modal-close:hover { background: var(--brand-light); color: var(--brand-dark); }
+  .quote-modal .modal-header {
+    padding: 36px 32px 20px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    flex-shrink: 0;
+  }
+  .quote-modal .modal-header h2 {
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1.05;
+  }
+  .quote-modal .modal-header p {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin: 0;
+  }
+  .quote-modal .modal-body {
+    padding: 28px 32px 32px;
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Progress */
+  .quote-modal .progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .quote-modal .progress-step {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .quote-modal .progress-step.active { background: var(--brand); }
+  .quote-modal .step-label {
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-bottom: 8px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .quote-modal .step h2 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+  .quote-modal .step .step-sub {
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+    font-size: 15px;
+  }
+  .quote-modal .step { display: none; }
+  .quote-modal .step.active { display: block; }
+
+  /* Service tiles */
+  .quote-modal .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .quote-modal .service-tile {
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 18px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+  .quote-modal .service-tile:hover { border-color: var(--brand); transform: none; }
+  .quote-modal .service-tile.selected { border-color: var(--brand); background: var(--brand-light); }
+  .quote-modal .service-tile::before { display: none; }
+  .quote-modal .service-tile .body { position: static; padding: 0; color: var(--ink); }
+  .quote-modal .service-tile .tile-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; color: var(--ink); }
+  .quote-modal .service-tile .tile-sub { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+  .quote-modal .service-tile .tile-icon { font-size: 22px; margin-bottom: 8px; display: block; }
+
+  /* Big-radio (2-col residential/commercial picker at step 2 — only when service=general) */
+  .quote-modal .big-radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .quote-modal .big-radio {
+    background: var(--paper); border: 1.5px solid var(--line);
+    border-radius: 12px; padding: 18px 16px; cursor: pointer;
+    text-align: left; transition: border-color .15s, background .15s;
+    display: flex; align-items: flex-start; gap: 12px; font-family: inherit;
+  }
+  .quote-modal .big-radio:hover { border-color: var(--brand); }
+  .quote-modal .big-radio.selected { border-color: var(--brand); background: var(--brand-light); }
+  .quote-modal .big-radio .br-circle {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--line); flex-shrink: 0; margin-top: 2px;
+    position: relative; transition: border-color .15s;
+  }
+  .quote-modal .big-radio.selected .br-circle { border-color: var(--brand); }
+  .quote-modal .big-radio.selected .br-circle::after {
+    content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--brand);
+  }
+  .quote-modal .big-radio .br-body { flex: 1; min-width: 0; }
+  .quote-modal .big-radio .br-title { font-weight: 700; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+  .quote-modal .big-radio .br-sub { color: var(--ink-soft); font-size: 13px; line-height: 1.4; }
+  .quote-modal .big-radio .br-icon { font-size: 18px; margin-right: 4px; }
+  @media (max-width: 640px) { .quote-modal .big-radio-grid { grid-template-columns: 1fr; } }
+
+  /* Inputs */
+  .quote-modal .field { margin-bottom: 16px; }
+  .quote-modal .field label { display: block; font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .quote-modal .field .req { color: #B23A3A; }
+  .quote-modal .field .hint { font-size: 13px; color: var(--ink-mute); margin-top: 4px; }
+  .quote-modal input[type=text],
+  .quote-modal input[type=email],
+  .quote-modal input[type=tel],
+  .quote-modal select,
+  .quote-modal textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    transition: border-color 0.15s;
+  }
+  .quote-modal input:focus,
+  .quote-modal select:focus,
+  .quote-modal textarea:focus { outline: none; border-color: var(--brand); }
+  .quote-modal textarea { min-height: 90px; resize: vertical; }
+  .quote-modal .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .quote-modal .radio-group, .quote-modal .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .quote-modal .radio-option, .quote-modal .checkbox-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 15px;
+  }
+  .quote-modal .radio-option:hover, .quote-modal .checkbox-option:hover { border-color: var(--brand); }
+  .quote-modal .radio-option.selected, .quote-modal .checkbox-option.selected { border-color: var(--brand); background: var(--brand-light); }
+  .quote-modal .radio-option input, .quote-modal .checkbox-option input { margin-right: 12px; }
+
+  /* Action buttons inside modal — brand teal primary, white secondary */
+  .quote-modal .actions { display: flex; gap: 12px; margin-top: 28px; }
+  .quote-modal .actions .btn {
+    padding: 14px 22px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    background: transparent;
+    color: var(--ink);
+  }
+  .quote-modal .actions .btn-primary { background: var(--brand); color: var(--paper); flex: 1; }
+  .quote-modal .actions .btn-primary:hover { background: var(--brand-dark); color: var(--paper); }
+  .quote-modal .actions .btn-secondary { background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); }
+  .quote-modal .actions .btn-secondary:hover { border-color: var(--ink-mute); background: var(--paper); }
+
+  /* Error */
+  .quote-modal .field-error { color: #B23A3A; font-size: 13px; margin-top: 6px; }
+  .quote-modal .field.has-error input,
+  .quote-modal .field.has-error select,
+  .quote-modal .field.has-error textarea { border-color: #B23A3A; }
+
+  /* Confirmation */
+  .quote-modal .confirm { text-align: center; padding: 16px 8px; }
+  .quote-modal .confirm-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--brand-light);
+    color: var(--brand);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+    font-weight: 700;
+  }
+  .quote-modal .confirm h2 { font-size: 26px; margin: 0 0 8px; font-weight: 800; }
+  .quote-modal .confirm p { color: var(--ink-soft); margin: 0 0 8px; font-size: 15px; }
+  .quote-modal .confirm-meta {
+    margin-top: 24px;
+    padding: 18px;
+    background: var(--bg);
+    border-radius: 12px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-align: left;
+    line-height: 1.6;
+  }
+  .quote-modal .confirm-meta strong { color: var(--ink); }
+  .quote-modal .confirm-meta a { color: var(--brand-dark); font-weight: 600; }
+
+  /* Mobile full screen */
+  @media (max-width: 640px) {
+    .quote-modal {
+      width: 100vw;
+      max-width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      max-height: 100vh;
+      max-height: 100dvh;
+      border-radius: 0;
+      top: 0;
+      left: 0;
+      margin: 0;
+    }
+    .quote-modal .modal-header {
+      padding: 28px 20px 16px;
+      padding-top: max(28px, env(safe-area-inset-top));
+    }
+    .quote-modal .modal-body {
+      padding: 24px 20px 32px;
+      padding-bottom: max(32px, env(safe-area-inset-bottom));
+    }
+    .quote-modal .modal-close { top: max(16px, env(safe-area-inset-top)); }
+    .quote-modal .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container">
+    <div class="bar">
+      <a href="/" class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V11l7-7 7 7v10M9 21v-6h6v6"/></svg>
+        The <span class="brand-word">Clean</span> Guys
+      </a>
+      <nav class="primary">
+        <a href="#" class="active">Home</a>
+        <a href="#services">Services</a>
+        <a href="#why">About</a>
+        <a href="#area">Service Area</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header-cta">
+        <a href="tel:7025514878" class="header-phone">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          702-551-4878
+        </a>
+        <a href="/get-a-quote" class="btn btn-primary" data-quote-trigger>Get a free quote</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <h1>You call,<br/>we <em>Clean</em>.</h1>
+        <p class="lede">Las Vegas's trusted cleaning team for windows, move-outs, post-construction, and commercial spaces. Licensed, bonded, and insured since 2022.</p>
+        <div class="hero-ctas">
+          <a href="/get-a-quote" class="btn btn-primary btn-large" data-quote-trigger>Get a free quote →</a>
+          <a href="tel:7025514878" class="btn btn-secondary btn-large">Call 702-551-4878</a>
+        </div>
+      </div>
+      <div class="hero-photo" role="img" aria-label="Cleaning a residential window"></div>
+    </div>
+  </div>
+</section>
+
+<div class="trust-band">
+  <div class="container">
+    <span class="item">Licensed in Nevada</span>
+    <span class="item">Bonded &amp; insured</span>
+    <span class="item">5-star on Google &amp; Yelp</span>
+    <span class="item">Locally owned · Est. 2022</span>
+    <span class="item">ASL proficient</span>
+  </div>
+</div>
+
+<section class="stats">
+  <div class="container">
+    <div class="stat-grid">
+      <div class="stat">
+        <span class="num">5★</span>
+        <span class="label">Google &amp; Yelp rating</span>
+      </div>
+      <div class="stat">
+        <span class="num">2022</span>
+        <span class="label">Established</span>
+      </div>
+      <div class="stat">
+        <span class="num">14</span>
+        <span class="label">Cities served</span>
+      </div>
+      <div class="stat">
+        <span class="num">100%</span>
+        <span class="label">Locally owned</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="container">
+    <div class="why-head">
+      <span class="eyebrow">Why pick us</span>
+      <h2>Professional service, backed by real care.</h2>
+      <p>We started The Clean Guys with one goal: do clean, careful work and treat every job like it's our own place. Showing up on time, paying attention to the small things, and pricing our work honestly.</p>
+    </div>
+
+    <!-- Team photo — visual proof of "the actual people doing the work" -->
+    <div class="why-team-photo">
+      <img src="assets/photos/team.webp" alt="Kervin and Jason, owners of The Clean Guys" loading="lazy" />
+      <div class="why-team-caption">
+        <span class="why-team-eyebrow">Meet The Owners</span>
+        <strong>Kervin &amp; Jason</strong>
+      </div>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Licensed, bonded, insured</h3>
+        <p>Full coverage on every job. Proof of insurance available for any commercial work that requires it.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+        </div>
+        <h3>Locally owned</h3>
+        <p>Run by Kervin and Jason — not a franchise. ASL proficient. Real people, real follow-through.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Flexible scheduling</h3>
+        <p>Mon–Sat 6 AM to 7:30 PM. Outside business hours when we can make it work for you.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <h3>Honest pricing</h3>
+        <p>No bait-and-switch. Quotes based on the actual job, not a placeholder. What we say is what you pay.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <h3>Easy payment</h3>
+        <p>Cards, Zelle, and Venmo — all accepted. Invoice on completion, no upfront deposits required.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Same-day response</h3>
+        <p>Quote requests get a same-day reply, often within an hour during business hours. No ghosting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reviews">
+  <div class="container">
+    <div class="reviews-head">
+      <span class="eyebrow">5-star reviews</span>
+      <h2>What clients say.</h2>
+      <p>Pulled from Google and Yelp. We respond to every review.</p>
+    </div>
+    <div class="review-grid">
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Showed up on time, did the windows perfectly, and were respectful of the space. Will definitely book them again."</p>
+        <div class="review-meta">
+          <div class="avatar">JL</div>
+          <div><strong>Josephine L.</strong>Google · 2026</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"Got my deposit back thanks to these guys. They cleaned things I didn't even know my apartment had."</p>
+        <div class="review-meta">
+          <div class="avatar">MT</div>
+          <div><strong>Marcus T.</strong>Yelp · 2026</div>
+        </div>
+      </div>
+      <div class="review-card">
+        <div class="stars">★★★★★</div>
+        <p class="review-quote">"We've been using The Clean Guys for our salon for six months. Reliable, friendly, and the place looks great every morning."</p>
+        <div class="review-meta">
+          <div class="avatar">AR</div>
+          <div><strong>Anna R.</strong>Google · 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="container">
+    <div class="services-head">
+      <div>
+        <span class="eyebrow">Residential and Commercial cleaning</span>
+        <h2 style="margin-top:16px;">Five services. Done right.</h2>
+      </div>
+      <p class="lede">From recurring home cleans to commercial accounts — pick the one that fits your job. Every service is licensed, bonded, and handled by Kervin &amp; Jason's team directly.</p>
+    </div>
+    <div class="service-grid">
+      <a href="/residential-cleaning" class="service-card residential">
+        <div class="body">
+          <span class="tag">Recurring or one-time</span>
+          <h3>Residential cleaning</h3>
+          <p>Weekly, bi-weekly, or monthly home cleans. Or a one-time deep clean when you need it. Kitchens, bathrooms, floors, surfaces — set the cadence and we show up.</p>
+          <span class="arrow">Learn more →</span>
+        </div>
+      </a>
+      <a href="/window-cleaning" class="service-card window">
+        <div class="body">
+          <span class="tag">Most popular</span>
+          <h3>Window cleaning</h3>
+          <p>Streak-free interior and exterior windows for homes, storefronts, and offices. One-time or recurring.</p>
+          <span class="arrow">Learn more →</span>
+        </div>
+      </a>
+      <a href="/commercial-cleaning" class="service-card commercial">
+        <div class="body">
+          <span class="tag">Recurring</span>
+          <h3>Commercial cleaning</h3>
+          <p>Recurring service for offices, retail, restaurants, and salons. We work around your hours, not the other way around.</p>
+          <span class="arrow">Learn more →</span>
+        </div>
+      </a>
+      <a href="/post-construction-cleaning" class="service-card post">
+        <div class="body">
+          <h3>Post-construction</h3>
+          <p>Drywall dust, debris, sticker residue. We turn finished construction into a move-in-ready space.</p>
+          <span class="arrow">Learn more →</span>
+        </div>
+      </a>
+      <a href="/move-in-move-out-cleaning" class="service-card move">
+        <div class="body">
+          <h3>Move in / move out</h3>
+          <p>Full-unit prep before you hand over the keys — or before they hand them to you. Tracks, baseboards, appliances, the works.</p>
+          <span class="arrow">Learn more →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="area" id="area">
+  <div class="container">
+    <span class="eyebrow" style="color: var(--accent);">Service area</span>
+    <h2>Across the Las Vegas Valley.</h2>
+    <p class="lede">From the Strip to Summerlin, Henderson to North Las Vegas — if you're in the valley, we'll get there.</p>
+    <ul class="area-cities">
+      <li>Las Vegas (Downtown)</li>
+      <li>The Strip</li>
+      <li>Summerlin</li>
+      <li>Centennial Hills</li>
+      <li>Henderson</li>
+      <li>North Las Vegas</li>
+      <li>Spring Valley</li>
+      <li>Enterprise</li>
+      <li>Paradise</li>
+      <li>Sunrise Manor</li>
+      <li>Green Valley</li>
+      <li>Southern Highlands</li>
+      <li>Rhodes Ranch</li>
+      <li>Whitney</li>
+    </ul>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-wrap">
+      <span class="eyebrow" style="display:block; text-align:center;">Frequently asked</span>
+      <h2>Quick answers.</h2>
+      <details class="faq-item" open>
+        <summary>How much does cleaning cost in Las Vegas?</summary>
+        <p>Pricing depends on the service, square footage, and condition of the space. Window cleaning typically starts around $150 for a small home. Move-out and post-construction jobs are quoted by walkthrough or photo. Send us a quote request and we'll give you a real number, not a placeholder.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Are you licensed and insured?</summary>
+        <p>Yes — fully licensed in Nevada, bonded, and carrying liability insurance. We can send proof of insurance for any commercial job that requires it.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Do you do recurring service?</summary>
+        <p>We do. Most of our commercial clients are weekly, bi-weekly, or monthly. Window cleaning is most often quarterly or twice a year for homes. Set the cadence that fits and we lock in a recurring slot.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta-final">
+  <div class="container">
+    <span class="eyebrow" style="color: var(--accent-soft);">Get on the schedule</span>
+    <h2 style="margin-top:16px;">Ready when you are.</h2>
+    <p>Send us the details and we'll get back to you the same day, often within an hour during business hours.</p>
+    <a href="/get-a-quote" class="btn btn-primary btn-large" data-quote-trigger>Get a free quote</a>
+    <span class="or">Or call or text <a href="tel:7025514878">702-551-4878</a></span>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom:16px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V11l7-7 7 7v10M9 21v-6h6v6"/></svg>
+          The Clean Guys
+        </div>
+        <p style="font-size:14px; max-width:340px; color:rgba(255,255,255,0.7);">You call, we clean. Las Vegas's trusted cleaning team since 2022. Licensed · Bonded · Insured.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/window-cleaning">Window cleaning</a></li>
+          <li><a href="/move-in-move-out-cleaning">Move in / out</a></li>
+          <li><a href="/post-construction-cleaning">Post-construction</a></li>
+          <li><a href="/commercial-cleaning">Commercial</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/about">About</a></li>
+          <li><a href="/service-areas">Service areas</a></li>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Get in touch</h4>
+        <ul>
+          <li><a href="tel:7025514878">702-551-4878</a></li>
+          <li><a href="mailto:Contact@thecleanguyslv.com">Contact@thecleanguyslv.com</a></li>
+          <li>Mon–Sat 6:00 AM – 7:30 PM</li>
+          <li>Las Vegas, NV</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 The Clean Guys LLC. All rights reserved.</span>
+      <span>Licensed · Bonded · Insured · Est. 2022</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ Quote Modal ============ -->
+<!-- ============================================
+     SERVICE DETAIL MODAL — opens when service card clicked.
+     Content is populated dynamically from JS data per service key.
+============================================ -->
+<dialog id="service-modal" class="service-modal" aria-labelledby="sm-title">
+  <button class="service-modal-close" data-service-modal-close aria-label="Close">×</button>
+  <div class="service-modal-hero" id="sm-hero">
+    <span class="service-modal-eyebrow" id="sm-eyebrow">Service detail</span>
+    <h2 class="service-modal-title" id="sm-title"></h2>
+  </div>
+  <div class="service-modal-body">
+    <p class="service-modal-lede" id="sm-lede"></p>
+    <a class="service-modal-page-link" id="sm-page-link" href="#">See the full service page →</a>
+
+    <div class="service-modal-grid">
+      <!-- Primary column: the spec (what you actually get) -->
+      <div class="service-modal-col-main">
+        <h3>What's included</h3>
+        <ul id="sm-included"></ul>
+
+        <h3>Add-ons available</h3>
+        <ul id="sm-addons"></ul>
+      </div>
+
+      <!-- Side column: the conversion content (price, audience, differentiator) -->
+      <div class="service-modal-col-side">
+        <h3>Starting at</h3>
+        <p class="pricing-line" id="sm-pricing"></p>
+
+        <h3>Best for</h3>
+        <p id="sm-good-for"></p>
+
+        <div class="service-modal-bonus">
+          <strong>Why this is different</strong>
+          <p id="sm-bonus"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="service-modal-cta">
+    <button type="button" class="btn" id="sm-quote-btn">Get a quote for this service →</button>
+    <a href="tel:7025514878" class="phone-link">Or call <strong>702-551-4878</strong></a>
+  </div>
+</dialog>
+
+<dialog id="quote-modal" class="quote-modal" aria-labelledby="qm-title">
+  <button type="button" class="modal-close" aria-label="Close form" data-modal-close>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+  <div class="modal-header">
+    <h2 id="qm-title">Get a free quote.</h2>
+    <p>A few quick details and we'll send back a real quote — usually within an hour during business hours.</p>
+  </div>
+  <div class="modal-body">
+
+    <div class="progress" aria-label="Form progress">
+      <div class="progress-step active" data-step="1"></div>
+      <div class="progress-step" data-step="2"></div>
+      <div class="progress-step" data-step="3"></div>
+    </div>
+
+    <!-- STEP 1: Service -->
+    <div class="step active" data-step="1">
+      <div class="step-label">Step 1 of 3</div>
+      <h2>What do you need cleaned?</h2>
+      <p class="step-sub">Pick the service that fits best — you can mention extras in the next step.</p>
+
+      <div class="service-grid" role="radiogroup" aria-label="Service type">
+        <button type="button" class="service-tile" data-service="general">
+          <span class="tile-icon">🏠</span>
+          <div class="tile-title">Residential or Commercial</div>
+          <div class="tile-sub">Recurring or one-time general cleaning</div>
+        </button>
+        <button type="button" class="service-tile" data-service="window">
+          <span class="tile-icon">🪟</span>
+          <div class="tile-title">Window cleaning</div>
+          <div class="tile-sub">Interior &amp; exterior, home or business</div>
+        </button>
+        <button type="button" class="service-tile" data-service="move">
+          <span class="tile-icon">📦</span>
+          <div class="tile-title">Move in / move out</div>
+          <div class="tile-sub">Full unit prep, deposit-ready</div>
+        </button>
+        <button type="button" class="service-tile" data-service="post-construction">
+          <span class="tile-icon">🔨</span>
+          <div class="tile-title">Post construction</div>
+          <div class="tile-sub">New build or renovation cleanup</div>
+        </button>
+      </div>
+
+      <div class="field-error" id="service-error" style="display:none; margin-top: 12px;">Please pick a service to continue.</div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" data-action="next" data-step="1">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Job details -->
+    <div class="step" data-step="2">
+      <div class="step-label">Step 2 of 3</div>
+      <h2>Tell us about the job.</h2>
+      <p class="step-sub" id="step2-sub">A few details so we can size the quote accurately.</p>
+
+      <!-- Residential vs Commercial picker (only when service=general) -->
+      <div class="field conditional" data-show-for="general">
+        <label>Is this for a home or a business? <span class="req">*</span></label>
+        <div class="big-radio-grid" role="radiogroup" aria-label="Residential or Commercial">
+          <button type="button" class="big-radio" data-subtype="residential">
+            <span class="br-circle"></span>
+            <div class="br-body">
+              <div class="br-title"><span class="br-icon">🏠</span> Residential</div>
+              <div class="br-sub">Home, apartment, condo, or townhouse</div>
+            </div>
+          </button>
+          <button type="button" class="big-radio" data-subtype="commercial">
+            <span class="br-circle"></span>
+            <div class="br-body">
+              <div class="br-title"><span class="br-icon">🏢</span> Commercial</div>
+              <div class="br-sub">Office, retail, restaurant, or salon</div>
+            </div>
+          </button>
+        </div>
+        <div class="field-error" id="subtype-error" style="display:none; margin-top: 10px;">Please choose Residential or Commercial.</div>
+      </div>
+
+      <div class="field">
+        <label for="property-type">Property type <span class="req">*</span></label>
+        <select id="property-type" name="propertyType" required>
+          <option value="">Select…</option>
+          <option>Single-family home</option>
+          <option>Apartment / condo</option>
+          <option>Townhouse</option>
+          <option>Office</option>
+          <option>Retail / storefront</option>
+          <option>Restaurant</option>
+          <option>Salon / spa</option>
+          <option>New construction</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="sqft">Approximate square footage</label>
+        <select id="sqft" name="sqft">
+          <option value="">Not sure</option>
+          <option>Under 1,000 sq ft</option>
+          <option>1,000 – 2,000 sq ft</option>
+          <option>2,000 – 3,500 sq ft</option>
+          <option>3,500 – 5,000 sq ft</option>
+          <option>Over 5,000 sq ft</option>
+        </select>
+        <div class="hint">Rough estimate is fine — we'll confirm at quote.</div>
+      </div>
+
+      <div class="field conditional" data-show-for="window">
+        <label for="window-count">Approximate number of windows</label>
+        <input type="text" id="window-count" name="windowCount" placeholder="e.g. 12" />
+      </div>
+
+      <div class="field conditional" data-show-for="window">
+        <label>Interior, exterior, or both?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="windowSides" value="Both" /> Both interior and exterior</label>
+          <label class="radio-option"><input type="radio" name="windowSides" value="Exterior" /> Exterior only</label>
+          <label class="radio-option"><input type="radio" name="windowSides" value="Interior" /> Interior only</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="move">
+        <label>Are you moving in, or moving out?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="moveType" value="Move out" /> Moving out — need it deposit-ready</label>
+          <label class="radio-option"><input type="radio" name="moveType" value="Move in" /> Moving in — want it spotless first</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="post-construction">
+        <label>Which phase do you need?</label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Rough clean" /> Rough clean (during construction)</label>
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Final clean" /> Final clean (before handover)</label>
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Touch-up" /> Touch-up (right before walkthrough)</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="post-construction">
+        <label>Are you a contractor, builder, or homeowner?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="role" value="General contractor" /> General contractor</label>
+          <label class="radio-option"><input type="radio" name="role" value="Builder / developer" /> Builder / developer</label>
+          <label class="radio-option"><input type="radio" name="role" value="Homeowner" /> Homeowner</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>How often do you want service?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Weekly" /> Weekly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Bi-weekly" /> Every 2 weeks</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Monthly" /> Monthly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="One-time" /> One-time deep clean</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Any specific focus areas? <span style="color: var(--ink-mute); font-weight: 400;">(optional)</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean kitchen" /> Deep clean the kitchen</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean bathrooms" /> Deep clean the bathrooms</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside oven" /> Inside the oven</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside fridge" /> Inside the fridge</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Interior windows" /> Interior windows</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Laundry / change linens" /> Laundry / change linens</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Pets at home?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="pets" value="No pets" /> No pets</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Dogs" /> Yes — dogs</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Cats" /> Yes — cats</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Other" /> Yes — other</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="commercial">
+        <label>How often do you want service?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="frequency" value="Daily" /> Daily (Mon–Fri)</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Weekly" /> Weekly</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Bi-weekly" /> Every 2 weeks</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Monthly" /> Monthly</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="One-time" /> One-time deep clean</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="timing">When do you need it done?</label>
+        <select id="timing" name="timing">
+          <option value="">Pick a window…</option>
+          <option>This week — urgent</option>
+          <option>Next 2 weeks</option>
+          <option>Within a month</option>
+          <option>Flexible — schedule what works</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="notes">Anything else we should know?</label>
+        <textarea id="notes" name="notes" placeholder="Hard water spots, second-story access, gate code, pets — whatever helps us quote accurately."></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" data-action="prev" data-step="2">← Back</button>
+        <button type="button" class="btn btn-primary" data-action="next" data-step="2">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Contact -->
+    <div class="step" data-step="3">
+      <div class="step-label">Step 3 of 3</div>
+      <h2>Where do we send the quote?</h2>
+      <p class="step-sub">We'll text or email it back to you, usually within an hour during business hours.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="firstName">First name <span class="req">*</span></label>
+          <input type="text" id="firstName" name="firstName" required autocomplete="given-name" />
+        </div>
+        <div class="field">
+          <label for="lastName">Last name</label>
+          <input type="text" id="lastName" name="lastName" autocomplete="family-name" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone <span class="req">*</span></label>
+        <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="702-555-0123" />
+        <div class="hint">We'll text first — fastest way to lock in a slot.</div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="field">
+        <label for="address">Service address (or zip code)</label>
+        <input type="text" id="address" name="address" autocomplete="street-address" placeholder="Las Vegas, Henderson, Summerlin…" />
+        <div class="hint">Helps us check we serve your area.</div>
+      </div>
+
+      <div class="field">
+        <label>Best way to reach you</label>
+        <div class="radio-group">
+          <label class="radio-option selected"><input type="radio" name="contactPref" value="Text" checked /> Text message</label>
+          <label class="radio-option"><input type="radio" name="contactPref" value="Call" /> Phone call</label>
+          <label class="radio-option"><input type="radio" name="contactPref" value="Email" /> Email</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" data-action="prev" data-step="3">← Back</button>
+        <button type="button" class="btn btn-primary" data-action="submit">Send my quote request</button>
+      </div>
+    </div>
+
+    <!-- Confirmation -->
+    <div class="step" data-step="4">
+      <div class="confirm">
+        <div class="confirm-icon">✓</div>
+        <h2>Got it. We're on it.</h2>
+        <p>Thanks <strong id="confirm-name">there</strong> — we got your quote request.</p>
+        <p>You'll hear back from us by <strong id="confirm-pref">text</strong>, usually within an hour during business hours (Mon–Sat, 6am–7:30pm).</p>
+        <div class="confirm-meta">
+          <strong>What happens next:</strong><br />
+          1. We review your details and put together a quote.<br />
+          2. We text or email it back, usually same day.<br />
+          3. If it works for you, we lock in a slot.<br /><br />
+          <strong>Need us sooner?</strong> Call or text <a href="tel:7025514878">702-551-4878</a>.
+        </div>
+        <div class="actions" style="justify-content:center; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" data-modal-close>Close</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</dialog>
+
+<script>
+(function() {
+  const modal = document.getElementById('quote-modal');
+  if (!modal) return;
+  const formState = { service: null, subType: null };
+
+  document.querySelectorAll('[data-quote-trigger]').forEach(trigger => {
+    trigger.addEventListener('click', e => {
+      e.preventDefault();
+      modal.showModal();
+      const preset = trigger.dataset.service;
+      const presetSubtype = trigger.dataset.subtype;
+      if (preset) {
+        const tile = modal.querySelector(`.service-tile[data-service="${preset}"]`);
+        if (tile) tile.click();
+        if (presetSubtype) {
+          setTimeout(() => {
+            const sub = modal.querySelector(`.big-radio[data-subtype="${presetSubtype}"]`);
+            if (sub) sub.click();
+          }, 0);
+        }
+      }
+    });
+  });
+
+  modal.querySelectorAll('[data-modal-close]').forEach(btn => {
+    btn.addEventListener('click', () => modal.close());
+  });
+
+  modal.addEventListener('click', e => {
+    if (e.target === modal) modal.close();
+  });
+
+  modal.addEventListener('close', () => {
+    formState.service = null;
+    formState.subType = null;
+    showStep(1);
+    modal.querySelectorAll('.service-tile').forEach(t => t.classList.remove('selected'));
+    modal.querySelectorAll('.big-radio').forEach(t => t.classList.remove('selected'));
+    modal.querySelectorAll('input, select, textarea').forEach(el => {
+      if (el.type === 'radio' || el.type === 'checkbox') {
+        el.checked = (el.name === 'contactPref' && el.value === 'Text');
+      } else el.value = '';
+    });
+    modal.querySelectorAll('.radio-option, .checkbox-option').forEach(el => {
+      el.classList.toggle('selected', el.querySelector('input').checked);
+    });
+    modal.querySelectorAll('.has-error').forEach(el => el.classList.remove('has-error'));
+    document.getElementById('service-error').style.display = 'none';
+    const se = document.getElementById('subtype-error');
+    if (se) se.style.display = 'none';
+    updateConditionals();
+    filterPropertyType();
+  });
+
+  modal.querySelectorAll('.service-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      modal.querySelectorAll('.service-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      formState.service = tile.dataset.service;
+      formState.subType = null;
+      modal.querySelectorAll('.big-radio').forEach(b => b.classList.remove('selected'));
+      document.getElementById('service-error').style.display = 'none';
+      updateConditionals();
+      filterPropertyType();
+    });
+  });
+
+  modal.querySelectorAll('.big-radio').forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.querySelectorAll('.big-radio').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      formState.subType = btn.dataset.subtype;
+      const err = document.getElementById('subtype-error');
+      if (err) err.style.display = 'none';
+      updateConditionals();
+      filterPropertyType();
+    });
+  });
+
+  function effectiveService() {
+    return formState.service === 'general' ? formState.subType : formState.service;
+  }
+
+  function updateConditionals() {
+    const effective = effectiveService();
+    modal.querySelectorAll('.conditional').forEach(el => {
+      const showFor = el.dataset.showFor;
+      if (showFor === 'general') {
+        el.style.display = formState.service === 'general' ? 'block' : 'none';
+      } else {
+        el.style.display = showFor === effective ? 'block' : 'none';
+      }
+    });
+    const subs = {
+      general: 'First — is this for a home or a business?',
+      residential: 'A few details about your home so we can lock in the right cadence and crew.',
+      window: 'A few details about your windows so we can size the quote accurately.',
+      move: 'A few details about the unit so we can quote a proper move clean.',
+      'post-construction': 'A few details about the project so we can phase the cleanup.',
+      commercial: 'A few details about your space and schedule.'
+    };
+    const subKey = (formState.service === 'general' && !formState.subType) ? 'general' : effective;
+    const subEl = document.getElementById('step2-sub');
+    if (subEl) {
+      subEl.textContent = (subKey && subs[subKey]) ? subs[subKey] : 'A few details so we can size the quote accurately.';
+    }
+  }
+
+  function filterPropertyType() {
+    const select = modal.querySelector('#property-type');
+    if (!select) return;
+    const effective = effectiveService();
+    const residentialOpts = ['Single-family home', 'Apartment / condo', 'Townhouse', 'Other'];
+    const commercialOpts = ['Office', 'Retail / storefront', 'Restaurant', 'Salon / spa', 'New construction', 'Other'];
+    const allOpts = ['Single-family home', 'Apartment / condo', 'Townhouse', 'Office', 'Retail / storefront', 'Restaurant', 'Salon / spa', 'New construction', 'Other'];
+    let shown = allOpts;
+    if (effective === 'residential' || effective === 'move') shown = residentialOpts;
+    else if (effective === 'commercial') shown = commercialOpts;
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Select…</option>' + shown.map(o => `<option>${o}</option>`).join('');
+    if (shown.includes(currentVal)) select.value = currentVal;
+  }
+
+  modal.querySelectorAll('.radio-option, .checkbox-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const input = opt.querySelector('input');
+      if (input.type === 'radio') {
+        const name = input.name;
+        modal.querySelectorAll(`input[name="${name}"]`).forEach(i => {
+          i.closest('.radio-option, .checkbox-option').classList.remove('selected');
+        });
+        opt.classList.add('selected');
+      } else {
+        setTimeout(() => opt.classList.toggle('selected', input.checked), 0);
+      }
+    });
+  });
+
+  function showStep(n) {
+    modal.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    const target = modal.querySelector(`.step[data-step="${n}"]`);
+    if (target) target.classList.add('active');
+    modal.querySelectorAll('.progress-step').forEach((p, i) => {
+      p.classList.toggle('active', (i + 1) <= n && n <= 3);
+    });
+    const body = modal.querySelector('.modal-body');
+    if (body) body.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goNext(currentStep) {
+    if (currentStep === 1 && !formState.service) {
+      document.getElementById('service-error').style.display = 'block';
+      return;
+    }
+    if (currentStep === 2) {
+      // Require subtype selection when service=general
+      if (formState.service === 'general' && !formState.subType) {
+        const err = document.getElementById('subtype-error');
+        if (err) {
+          err.style.display = 'block';
+          err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      const propertyType = document.getElementById('property-type');
+      if (!propertyType.value) {
+        propertyType.closest('.field').classList.add('has-error');
+        propertyType.focus();
+        return;
+      }
+      propertyType.closest('.field').classList.remove('has-error');
+    }
+    showStep(currentStep + 1);
+  }
+
+  function submitForm() {
+    const required = ['firstName', 'phone', 'email'];
+    let valid = true;
+    required.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.closest('.field').classList.add('has-error');
+        valid = false;
+      } else {
+        el.closest('.field').classList.remove('has-error');
+      }
+    });
+    if (!valid) {
+      document.getElementById('firstName').focus();
+      return;
+    }
+    const name = document.getElementById('firstName').value || 'there';
+    const pref = (modal.querySelector('input[name="contactPref"]:checked')?.value || 'Text').toLowerCase();
+    document.getElementById('confirm-name').textContent = name;
+    document.getElementById('confirm-pref').textContent = pref;
+    showStep(4);
+  }
+
+  modal.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', () => {
+      const action = el.dataset.action;
+      const step = parseInt(el.dataset.step, 10);
+      if (action === 'next') goNext(step);
+      else if (action === 'prev') showStep(step - 1);
+      else if (action === 'submit') submitForm();
+    });
+  });
+
+  updateConditionals();
+
+  // Expose for service modal → quote modal handoff
+  window.openQuoteForService = function(serviceKey, subtype) {
+    modal.showModal();
+    const tile = modal.querySelector(`.service-tile[data-service="${serviceKey}"]`);
+    if (tile) tile.click();
+    if (subtype) {
+      setTimeout(() => {
+        const sub = modal.querySelector(`.big-radio[data-subtype="${subtype}"]`);
+        if (sub) sub.click();
+      }, 0);
+    }
+  };
+})();
+
+// ============================================================
+// SERVICE DETAIL MODAL — populates from data, hands off to quote
+// ============================================================
+(function() {
+  const sModal = document.getElementById('service-modal');
+  if (!sModal) return;
+
+  const serviceDetails = {
+    residential: {
+      title: 'Residential cleaning',
+      pageUrl: '/residential-cleaning',
+      image: 'assets/photos/residential.webp',
+      lede: 'Recurring or one-time house cleans. Set the cadence — weekly, bi-weekly, or monthly — and we show up. Same team every visit so we get to know your home.',
+      included: [
+        'Kitchen: counters, stovetop, microwave, sink, exteriors',
+        'Bathrooms: tub, shower, toilet, sink, mirror, floors',
+        'Bedrooms: dusting, vacuuming, surfaces, bed-making',
+        'Living areas: dust + vacuum + hard floors',
+        'Trash + recycling taken out',
+        'Door handles + light switches sanitized',
+      ],
+      addons: ['Inside oven', 'Inside fridge', 'Interior windows', 'Laundry + linen change', 'Deep-clean kitchen', 'Deep-clean bathrooms'],
+      pricing: 'From <strong>$140</strong> for a 1-bedroom apartment · <strong>$220</strong> for a 3-bedroom home · one-time deep cleans from <strong>$280</strong>',
+      goodFor: 'Busy families, working professionals, vacation rentals (turn-overs), post-event tidy-ups, snowbirds, or anyone who wants their weekend back.',
+      bonus: 'Same team every visit means we learn your home. We can hold a key or code (optional). 100% satisfaction guaranteed — if something\'s missed, we come back free.',
+      quoteKey: 'general',
+      subtype: 'residential',
+    },
+    window: {
+      title: 'Window cleaning',
+      pageUrl: '/window-cleaning',
+      image: 'assets/photos/window.webp',
+      lede: 'Streak-free interior and exterior windows. One-time, quarterly, or twice a year. We do residential and commercial — single story, two-story, storefronts, the works.',
+      included: [
+        'All accessible interior windows (both sides)',
+        'Tracks + sills wiped',
+        'Screens rinsed and dried',
+        'Exterior windows up to second story',
+        'Sliding-glass doors',
+        'Mirrors (on request)',
+      ],
+      addons: ['Hard-water stain treatment', 'Solar panel cleaning', 'Skylight cleaning', 'Chandelier glass', 'Window-only recurring plan (15% off)'],
+      pricing: 'From <strong>$150</strong> for a small home (≤10 windows) · two-story homes from <strong>$280</strong> · storefronts from <strong>$85/visit</strong> on recurring',
+      goodFor: 'Homeowners, storefronts, offices, real estate listings, post-renovation reveals, or any time the natural light feels off.',
+      bonus: 'We use pure-water poles for second-story exteriors — no ladders against your house, no soap residue on your walls. Recurring window cleaning gets 15% off.',
+      quoteKey: 'window',
+    },
+    move: {
+      title: 'Move in / move out cleaning',
+      pageUrl: '/move-in-move-out-cleaning',
+      image: 'assets/photos/move.webp',
+      lede: 'Full-unit prep before you hand over the keys — or before you take them. Deposit-ready guaranteed. We coordinate with leasing agents directly if needed.',
+      included: [
+        'Inside all cabinets and drawers',
+        'Inside oven, fridge, microwave, dishwasher',
+        'Baseboards + door frames + trim',
+        'Window sills + tracks',
+        'All floors: vacuum + mop',
+        'All bathrooms: full scrub down',
+        'Inside closets',
+        'Light fixture cleaning',
+      ],
+      addons: ['Carpet shampoo', 'Wall spot-cleaning', 'Inside trash compactor', 'Window cleaning (combined discount)'],
+      pricing: 'From <strong>$280</strong> for 1-bedroom apartments · <strong>$440</strong> for 3-bedroom homes · deposit-back guarantee included',
+      goodFor: 'Renters wanting their full deposit back, landlords prepping units for new tenants, real estate agents staging properties, homeowners moving in fresh.',
+      bonus: 'We coordinate directly with your leasing agent or property manager on request — so you don\'t have to be the middleman during a stressful move.',
+      quoteKey: 'move',
+    },
+    'post-construction': {
+      title: 'Post-construction cleanup',
+      pageUrl: '/post-construction-cleaning',
+      image: 'assets/photos/post-construction.webp',
+      lede: 'Drywall dust, sticker residue, paint splatters, debris. We turn a finished job into a move-in-ready space. We coordinate with your GC\'s schedule.',
+      included: [
+        'Drywall dust HEPA-vacuumed off all surfaces',
+        'Sticker + label residue removed',
+        'Paint splatters lifted (where safe)',
+        'Hardware polished + cleaned',
+        'Floors machine-buffed',
+        'Cabinets wiped inside + out',
+        'All glass cleaned',
+        'Tile + grout wiped',
+      ],
+      addons: ['Rough clean (during construction)', 'Final clean (before handover)', 'Touch-up (right before walkthrough)', 'Net-30 invoicing for established contractors'],
+      pricing: 'Quoted by walkthrough or photo — typically <strong>$0.30 – $0.60/sqft</strong> depending on scope and phase',
+      goodFor: 'General contractors, builders, developers, ADU builders, homeowners post-renovation, kitchen/bath remodel clients.',
+      bonus: 'Insurance certificates available on request. Net-30 invoicing for established contractors — keep your project cash flow moving.',
+      quoteKey: 'post-construction',
+    },
+    commercial: {
+      title: 'Commercial cleaning',
+      pageUrl: '/commercial-cleaning',
+      image: 'assets/photos/commercial.webp',
+      lede: 'Recurring service for offices, retail, restaurants, and salons. We work around your hours — after-hours scheduling included free. Day-porter service available.',
+      included: [
+        'Restrooms: full scrub + restock',
+        'Breakroom / kitchen: counters, sinks, appliances',
+        'Offices + cubes: dust, vacuum, trash',
+        'Common areas + lobby',
+        'Glass: entry doors, partitions, dividers',
+        'Floors: vacuum (carpet), mop (hard surface)',
+      ],
+      addons: ['Day-porter service', 'Restroom paper + soap restocking', 'Floor stripping + waxing (quarterly)', 'Window cleaning (combined billing)'],
+      pricing: 'Small offices from <strong>$185/visit</strong> (weekly) · restaurants from <strong>$240/visit</strong> · salons from <strong>$165/visit</strong>',
+      goodFor: 'Professional offices, retail stores, restaurants, salons, medical offices (non-clinical zones), gyms (lobby + locker areas).',
+      bonus: 'After-hours scheduling free. Certificate of insurance available for any commercial job. Net-30 invoicing for established businesses.',
+      quoteKey: 'general',
+      subtype: 'commercial',
+    },
+  };
+
+  function openServiceModal(key) {
+    const data = serviceDetails[key];
+    if (!data) return;
+    document.getElementById('sm-title').textContent = data.title;
+    document.getElementById('sm-lede').textContent = data.lede;
+    document.getElementById('sm-included').innerHTML = data.included.map(i => `<li>${i}</li>`).join('');
+    document.getElementById('sm-addons').innerHTML = data.addons.map(i => `<li>${i}</li>`).join('');
+    document.getElementById('sm-pricing').innerHTML = data.pricing;
+    document.getElementById('sm-good-for').textContent = data.goodFor;
+    document.getElementById('sm-bonus').textContent = data.bonus;
+    document.getElementById('sm-hero').style.backgroundImage = `url('${data.image}')`;
+    // Page link (full SEO-optimized service page — built in Phase 2)
+    const pageLink = document.getElementById('sm-page-link');
+    if (pageLink) {
+      pageLink.href = data.pageUrl || '#';
+      pageLink.textContent = `See the full ${data.title} page →`;
+    }
+    const cta = document.getElementById('sm-quote-btn');
+    cta.dataset.serviceKey = data.quoteKey || key;
+    cta.dataset.serviceSubtype = data.subtype || '';
+    sModal.showModal();
+    sModal.querySelector('.service-modal-body').scrollTop = 0;
+  }
+
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('click', e => {
+      const classes = ['residential','window','move','post','commercial'];
+      const key = classes.find(c => card.classList.contains(c));
+      if (!key) return;
+      const dataKey = key === 'post' ? 'post-construction' : key;
+      e.preventDefault();
+      openServiceModal(dataKey);
+    });
+  });
+
+  sModal.querySelectorAll('[data-service-modal-close]').forEach(btn => {
+    btn.addEventListener('click', () => sModal.close());
+  });
+  sModal.addEventListener('click', e => {
+    if (e.target === sModal) sModal.close();
+  });
+
+  document.getElementById('sm-quote-btn').addEventListener('click', () => {
+    const key = document.getElementById('sm-quote-btn').dataset.serviceKey;
+    const subtype = document.getElementById('sm-quote-btn').dataset.serviceSubtype;
+    sModal.close();
+    setTimeout(() => {
+      if (window.openQuoteForService) window.openQuoteForService(key, subtype || null);
+    }, 100);
+  });
+})();
+</script>
+
+</body>
+</html>

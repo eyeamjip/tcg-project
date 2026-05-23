@@ -1,0 +1,218 @@
+/*
+Theme Name: The Clean Guys Child
+Theme URI: https://thecleanguyslv.com
+Description: Custom child theme for The Clean Guys LLC, built on Kadence. Brand colors, typography, and custom block patterns specific to the cleaning company.
+Author: The Clean Guys LLC
+Author URI: https://thecleanguyslv.com
+Template: kadence
+Version: 1.0.0
+Text Domain: thecleanguys-child
+*/
+
+/* =====================================================================
+   BRAND TOKENS
+   ===================================================================== */
+:root {
+  /* Brand colors */
+  --tcg-brand:        #0F6E56;
+  --tcg-brand-dark:   #085041;
+  --tcg-brand-light:  #E1F5EE;
+  --tcg-accent:       #1D9E75;
+
+  /* Ink */
+  --tcg-ink:          #1A1A1A;
+  --tcg-ink-soft:     #555555;
+  --tcg-ink-mute:     #888888;
+
+  /* Surfaces */
+  --tcg-bg:           #FAFAF7;
+  --tcg-surface:      #FFFFFF;
+  --tcg-line:         #E5E5E0;
+
+  /* Type scale */
+  --tcg-font-sans:    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --tcg-radius-sm:    6px;
+  --tcg-radius-md:    10px;
+  --tcg-radius-lg:    14px;
+}
+
+/* =====================================================================
+   GLOBAL OVERRIDES
+   ===================================================================== */
+body {
+  font-family: var(--tcg-font-sans);
+  color: var(--tcg-ink);
+  background: var(--tcg-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { letter-spacing: -0.3px; }
+h1 { font-weight: 700; }
+
+/* Brand button */
+.tcg-btn-primary,
+.wp-block-button.is-style-tcg-primary .wp-block-button__link {
+  background: var(--tcg-brand);
+  color: #fff !important;
+  border-radius: var(--tcg-radius-md);
+  padding: 14px 22px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.15s;
+  border: none;
+}
+.tcg-btn-primary:hover,
+.wp-block-button.is-style-tcg-primary .wp-block-button__link:hover {
+  background: var(--tcg-brand-dark);
+}
+
+.tcg-btn-secondary {
+  background: var(--tcg-surface);
+  color: var(--tcg-ink);
+  border: 1.5px solid var(--tcg-line);
+  border-radius: var(--tcg-radius-md);
+  padding: 14px 22px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: border-color 0.15s;
+}
+.tcg-btn-secondary:hover { border-color: var(--tcg-ink-mute); }
+
+/* Trust strip (under hero) */
+.tcg-trust-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 16px;
+  font-size: 14px;
+  color: var(--tcg-ink-mute);
+  padding: 16px 0;
+}
+.tcg-trust-strip span::before {
+  content: "✓ ";
+  color: var(--tcg-brand);
+  font-weight: 700;
+}
+
+/* Service cards */
+.tcg-service-card {
+  background: var(--tcg-surface);
+  border: 1px solid var(--tcg-line);
+  border-radius: var(--tcg-radius-lg);
+  padding: 24px;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.tcg-service-card:hover {
+  border-color: var(--tcg-brand);
+  transform: translateY(-2px);
+}
+.tcg-service-card h3 { margin-top: 0; }
+
+/* CTA banner */
+.tcg-cta-banner {
+  background: var(--tcg-brand);
+  color: #fff;
+  border-radius: var(--tcg-radius-lg);
+  padding: 32px 24px;
+  text-align: center;
+}
+.tcg-cta-banner h2 { color: #fff; margin-top: 0; }
+.tcg-cta-banner .tcg-btn-primary {
+  background: #fff;
+  color: var(--tcg-brand);
+}
+.tcg-cta-banner .tcg-btn-primary:hover { background: var(--tcg-brand-light); }
+
+/* FAQ accordion */
+.tcg-faq details {
+  border: 1px solid var(--tcg-line);
+  border-radius: var(--tcg-radius-md);
+  padding: 16px 18px;
+  margin-bottom: 8px;
+  background: var(--tcg-surface);
+}
+.tcg-faq summary {
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  list-style: none;
+}
+.tcg-faq summary::-webkit-details-marker { display: none; }
+.tcg-faq summary::after {
+  content: "+";
+  float: right;
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--tcg-brand);
+  transition: transform 0.15s;
+}
+.tcg-faq details[open] summary::after {
+  content: "−";
+}
+.tcg-faq p {
+  margin-top: 12px;
+  color: var(--tcg-ink-soft);
+}
+
+/* =====================================================================
+   STICKY MOBILE CALL BAR
+   ===================================================================== */
+.tcg-mobile-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--tcg-surface);
+  border-top: 1px solid var(--tcg-line);
+  padding: 10px 16px;
+  z-index: 100;
+  gap: 8px;
+}
+.tcg-mobile-bar a {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  border-radius: var(--tcg-radius-md);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+.tcg-mobile-bar .tcg-call { background: var(--tcg-brand); color: #fff; }
+.tcg-mobile-bar .tcg-text { background: var(--tcg-brand-light); color: var(--tcg-brand-dark); }
+.tcg-mobile-bar .tcg-quote { background: var(--tcg-ink); color: #fff; }
+
+@media (max-width: 768px) {
+  .tcg-mobile-bar { display: flex; }
+  body { padding-bottom: 70px; }
+}
+
+/* =====================================================================
+   ACCESSIBILITY
+   ===================================================================== */
+.tcg-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--tcg-brand);
+  color: #fff;
+  padding: 12px 18px;
+  z-index: 10000;
+}
+.tcg-skip-link:focus { left: 8px; top: 8px; }
+
+*:focus-visible {
+  outline: 2px solid var(--tcg-brand);
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   PRINT
+   ===================================================================== */
+@media print {
+  .tcg-mobile-bar,
+  .site-header,
+  .site-footer { display: none; }
+}

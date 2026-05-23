@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get a Quote — The Clean Guys LLC</title>
+<style>
+  :root {
+    --brand: #0F6E56;
+    --brand-dark: #085041;
+    --brand-light: #E1F5EE;
+    --ink: #1A1A1A;
+    --ink-soft: #555;
+    --ink-mute: #888;
+    --line: #E5E5E0;
+    --bg: #FAFAF7;
+    --error: #B23A3A;
+    --success: #1D9E75;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Page chrome */
+  .page-header {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .logo { font-weight: 700; font-size: 18px; color: var(--ink); text-decoration: none; }
+  .logo span { color: var(--brand); }
+  .header-phone {
+    font-weight: 600;
+    color: var(--brand-dark);
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .header-phone:hover { color: var(--brand); }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(180deg, #fff 0%, var(--bg) 100%);
+    padding: 40px 24px 24px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 38px);
+    margin: 0 0 8px;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+  }
+  .hero p {
+    color: var(--ink-soft);
+    margin: 0 auto;
+    max-width: 580px;
+    font-size: 16px;
+  }
+  .trust-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    justify-content: center;
+    margin-top: 16px;
+    color: var(--ink-mute);
+    font-size: 13px;
+  }
+  .trust-strip span::before { content: "✓ "; color: var(--brand); font-weight: 700; }
+
+  /* Form container */
+  .form-wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  .form-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  /* Progress */
+  .progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .progress-step {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .progress-step.active { background: var(--brand); }
+  .step-label {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .step h2 {
+    font-size: 22px;
+    margin: 0 0 4px;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .step .step-sub {
+    color: var(--ink-soft);
+    margin: 0 0 20px;
+    font-size: 15px;
+  }
+
+  /* Step visibility */
+  .step { display: none; }
+  .step.active { display: block; }
+
+  /* Service tiles */
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .service-tile {
+    border: 1.5px solid var(--line);
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+  .service-tile:hover { border-color: var(--brand); }
+  .service-tile.selected {
+    border-color: var(--brand);
+    background: var(--brand-light);
+  }
+  .service-tile .tile-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  .service-tile .tile-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .service-tile .tile-icon {
+    font-size: 22px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  /* 2-col big-radio (step 2 residential/commercial picker)
+     UX rationale: same visual language as service-tile so users feel they're
+     in a familiar pattern, just at a finer-grained decision. */
+  .big-radio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .big-radio {
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .15s, background .15s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: inherit;
+  }
+  .big-radio:hover { border-color: var(--brand); }
+  .big-radio.selected {
+    border-color: var(--brand);
+    background: var(--brand-light);
+  }
+  .big-radio .br-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--line);
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    transition: border-color .15s;
+  }
+  .big-radio.selected .br-circle { border-color: var(--brand); }
+  .big-radio.selected .br-circle::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--brand);
+  }
+  .big-radio .br-body { flex: 1; min-width: 0; }
+  .big-radio .br-title {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .big-radio .br-sub {
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .big-radio .br-icon {
+    font-size: 20px;
+    margin-right: 4px;
+  }
+  @media (max-width: 640px) {
+    .big-radio-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Inputs */
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .field .req { color: var(--error); }
+  .field .hint {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+  }
+  input[type=text], input[type=email], input[type=tel], select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--brand);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 480px) {
+    .field-row { grid-template-columns: 1fr; }
+  }
+
+  .radio-group, .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .radio-option, .checkbox-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 15px;
+  }
+  .radio-option:hover, .checkbox-option:hover { border-color: var(--brand); }
+  .radio-option.selected, .checkbox-option.selected {
+    border-color: var(--brand);
+    background: var(--brand-light);
+  }
+  .radio-option input, .checkbox-option input { margin-right: 12px; }
+
+  /* Buttons */
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .btn {
+    padding: 14px 22px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--brand);
+    color: #fff;
+    flex: 1;
+  }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-secondary {
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid var(--line);
+  }
+  .btn-secondary:hover { border-color: var(--ink-mute); }
+
+  /* Error */
+  .field-error {
+    color: var(--error);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .field.has-error input,
+  .field.has-error select,
+  .field.has-error textarea { border-color: var(--error); }
+
+  /* Confirmation */
+  .confirm {
+    text-align: center;
+    padding: 32px 16px;
+  }
+  .confirm-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--brand-light);
+    color: var(--brand);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 30px;
+    font-weight: 700;
+  }
+  .confirm h2 {
+    font-size: 26px;
+    margin: 0 0 8px;
+  }
+  .confirm p { color: var(--ink-soft); margin: 0 0 8px; }
+  .confirm-meta {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-align: left;
+  }
+  .confirm-meta strong { color: var(--ink); }
+
+  /* Sticky mobile call bar */
+  .mobile-call-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-top: 1px solid var(--line);
+    padding: 10px 16px;
+    z-index: 20;
+    gap: 8px;
+  }
+  .mobile-call-bar a {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .mobile-call-bar .call { background: var(--brand); color: #fff; }
+  .mobile-call-bar .text { background: var(--brand-light); color: var(--brand-dark); }
+  @media (max-width: 640px) {
+    .mobile-call-bar { display: flex; }
+    .form-wrap { padding-bottom: 80px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <a href="#" class="logo">The <span>Clean</span> Guys</a>
+  <a href="tel:7025514878" class="header-phone">📞 702-551-4878</a>
+</header>
+
+<section class="hero">
+  <h1>Get a free quote.</h1>
+  <p>Tell us a few quick details and we'll send back a real quote — usually within an hour during business hours.</p>
+  <div class="trust-strip">
+    <span>Licensed, bonded, insured</span>
+    <span>5-star on Google &amp; Yelp</span>
+    <span>Locally owned</span>
+  </div>
+</section>
+
+<div class="form-wrap">
+  <div class="form-card">
+
+    <div class="progress" aria-label="Form progress">
+      <div class="progress-step active" data-step="1"></div>
+      <div class="progress-step" data-step="2"></div>
+      <div class="progress-step" data-step="3"></div>
+    </div>
+
+    <!-- ========== STEP 1: Service ========== -->
+    <div class="step active" data-step="1">
+      <div class="step-label">Step 1 of 3</div>
+      <h2>What do you need cleaned?</h2>
+      <p class="step-sub">Pick the service that fits best — you can mention extras in the next step.</p>
+
+      <div class="service-grid" role="radiogroup" aria-label="Service type">
+        <button type="button" class="service-tile" data-service="general">
+          <span class="tile-icon">🏠</span>
+          <div class="tile-title">Residential or Commercial</div>
+          <div class="tile-sub">Recurring or one-time general cleaning</div>
+        </button>
+        <button type="button" class="service-tile" data-service="window">
+          <span class="tile-icon">🪟</span>
+          <div class="tile-title">Window cleaning</div>
+          <div class="tile-sub">Interior &amp; exterior, home or business</div>
+        </button>
+        <button type="button" class="service-tile" data-service="move">
+          <span class="tile-icon">📦</span>
+          <div class="tile-title">Move in / move out</div>
+          <div class="tile-sub">Full unit prep, deposit-ready</div>
+        </button>
+        <button type="button" class="service-tile" data-service="post-construction">
+          <span class="tile-icon">🔨</span>
+          <div class="tile-title">Post construction</div>
+          <div class="tile-sub">New build or renovation cleanup</div>
+        </button>
+      </div>
+
+      <div class="field-error" id="service-error" style="display:none; margin-top: 12px;">Please pick a service to continue.</div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" onclick="goNext(1)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 2: Job details (conditional) ========== -->
+    <div class="step" data-step="2">
+      <div class="step-label">Step 2 of 3</div>
+      <h2>Tell us about the job.</h2>
+      <p class="step-sub" id="step2-sub">A few details so we can size the quote accurately.</p>
+
+      <!-- Residential vs Commercial picker (only when service=general) -->
+      <div class="field conditional" data-show-for="general">
+        <label>Is this for a home or a business? <span class="req">*</span></label>
+        <div class="big-radio-grid" role="radiogroup" aria-label="Residential or Commercial">
+          <button type="button" class="big-radio" data-subtype="residential">
+            <span class="br-circle"></span>
+            <div class="br-body">
+              <div class="br-title"><span class="br-icon">🏠</span> Residential</div>
+              <div class="br-sub">Home, apartment, condo, or townhouse</div>
+            </div>
+          </button>
+          <button type="button" class="big-radio" data-subtype="commercial">
+            <span class="br-circle"></span>
+            <div class="br-body">
+              <div class="br-title"><span class="br-icon">🏢</span> Commercial</div>
+              <div class="br-sub">Office, retail, restaurant, or salon</div>
+            </div>
+          </button>
+        </div>
+        <div class="field-error" id="subtype-error" style="display:none; margin-top: 10px;">Please choose Residential or Commercial.</div>
+      </div>
+
+      <!-- Property type (universal — filtered by subtype if general) -->
+      <div class="field">
+        <label for="property-type">Property type <span class="req">*</span></label>
+        <select id="property-type" name="propertyType" required>
+          <option value="">Select…</option>
+          <option>Single-family home</option>
+          <option>Apartment / condo</option>
+          <option>Townhouse</option>
+          <option>Office</option>
+          <option>Retail / storefront</option>
+          <option>Restaurant</option>
+          <option>Salon / spa</option>
+          <option>New construction</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- Square footage (universal) -->
+      <div class="field">
+        <label for="sqft">Approximate square footage</label>
+        <select id="sqft" name="sqft">
+          <option value="">Not sure</option>
+          <option>Under 1,000 sq ft</option>
+          <option>1,000 – 2,000 sq ft</option>
+          <option>2,000 – 3,500 sq ft</option>
+          <option>3,500 – 5,000 sq ft</option>
+          <option>Over 5,000 sq ft</option>
+        </select>
+        <div class="hint">Rough estimate is fine — we'll confirm at quote.</div>
+      </div>
+
+      <!-- Conditional: window-specific -->
+      <div class="field conditional" data-show-for="window">
+        <label for="window-count">Approximate number of windows</label>
+        <input type="text" id="window-count" name="windowCount" placeholder="e.g. 12" />
+      </div>
+
+      <div class="field conditional" data-show-for="window">
+        <label>Interior, exterior, or both?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="windowSides" value="Both" /> Both interior and exterior</label>
+          <label class="radio-option"><input type="radio" name="windowSides" value="Exterior" /> Exterior only</label>
+          <label class="radio-option"><input type="radio" name="windowSides" value="Interior" /> Interior only</label>
+        </div>
+      </div>
+
+      <!-- Conditional: move-specific -->
+      <div class="field conditional" data-show-for="move">
+        <label>Are you moving in, or moving out?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="moveType" value="Move out" /> Moving out — need it deposit-ready</label>
+          <label class="radio-option"><input type="radio" name="moveType" value="Move in" /> Moving in — want it spotless first</label>
+        </div>
+      </div>
+
+      <!-- Conditional: post-construction-specific -->
+      <div class="field conditional" data-show-for="post-construction">
+        <label>Which phase do you need?</label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Rough clean" /> Rough clean (during construction)</label>
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Final clean" /> Final clean (before handover)</label>
+          <label class="checkbox-option"><input type="checkbox" name="phase" value="Touch-up" /> Touch-up (right before walkthrough)</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="post-construction">
+        <label>Are you a contractor, builder, or homeowner?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="role" value="General contractor" /> General contractor</label>
+          <label class="radio-option"><input type="radio" name="role" value="Builder / developer" /> Builder / developer</label>
+          <label class="radio-option"><input type="radio" name="role" value="Homeowner" /> Homeowner</label>
+        </div>
+      </div>
+
+      <!-- Conditional: residential-specific -->
+      <div class="field conditional" data-show-for="residential">
+        <label>How often do you want service?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Weekly" /> Weekly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Bi-weekly" /> Every 2 weeks</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="Monthly" /> Monthly</label>
+          <label class="radio-option"><input type="radio" name="residentialFrequency" value="One-time" /> One-time deep clean</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Any specific focus areas? <span style="color: var(--ink-mute); font-weight: 400;">(optional)</span></label>
+        <div class="checkbox-group">
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean kitchen" /> Deep clean the kitchen</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Deep clean bathrooms" /> Deep clean the bathrooms</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside oven" /> Inside the oven</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Inside fridge" /> Inside the fridge</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Interior windows" /> Interior windows</label>
+          <label class="checkbox-option"><input type="checkbox" name="focus" value="Laundry / change linens" /> Laundry / change linens</label>
+        </div>
+      </div>
+
+      <div class="field conditional" data-show-for="residential">
+        <label>Pets at home?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="pets" value="No pets" /> No pets</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Dogs" /> Yes — dogs</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Cats" /> Yes — cats</label>
+          <label class="radio-option"><input type="radio" name="pets" value="Other" /> Yes — other</label>
+        </div>
+      </div>
+
+      <!-- Conditional: commercial-specific -->
+      <div class="field conditional" data-show-for="commercial">
+        <label>How often do you want service?</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="frequency" value="Daily" /> Daily (Mon–Fri)</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Weekly" /> Weekly</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Bi-weekly" /> Every 2 weeks</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="Monthly" /> Monthly</label>
+          <label class="radio-option"><input type="radio" name="frequency" value="One-time" /> One-time deep clean</label>
+        </div>
+      </div>
+
+      <!-- Timing (universal) -->
+      <div class="field">
+        <label for="timing">When do you need it done?</label>
+        <select id="timing" name="timing">
+          <option value="">Pick a window…</option>
+          <option>This week — urgent</option>
+          <option>Next 2 weeks</option>
+          <option>Within a month</option>
+          <option>Flexible — schedule what works</option>
+        </select>
+      </div>
+
+      <!-- Notes (universal) -->
+      <div class="field">
+        <label for="notes">Anything else we should know?</label>
+        <textarea id="notes" name="notes" placeholder="Hard water spots, second-story access, gate code, pets — whatever helps us quote accurately."></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" onclick="goPrev(2)">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="goNext(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 3: Contact ========== -->
+    <div class="step" data-step="3">
+      <div class="step-label">Step 3 of 3</div>
+      <h2>Where do we send the quote?</h2>
+      <p class="step-sub">We'll text or email it back to you, usually within an hour during business hours.</p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="firstName">First name <span class="req">*</span></label>
+          <input type="text" id="firstName" name="firstName" required autocomplete="given-name" />
+        </div>
+        <div class="field">
+          <label for="lastName">Last name</label>
+          <input type="text" id="lastName" name="lastName" autocomplete="family-name" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone <span class="req">*</span></label>
+        <input type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="702-555-0123" />
+        <div class="hint">We'll text first — fastest way to lock in a slot.</div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" name="email" required autocomplete="email" placeholder="you@example.com" />
+      </div>
+
+      <div class="field">
+        <label for="address">Service address (or zip code)</label>
+        <input type="text" id="address" name="address" autocomplete="street-address" placeholder="Las Vegas, Henderson, Summerlin…" />
+        <div class="hint">Helps us check we serve your area.</div>
+      </div>
+
+      <div class="field">
+        <label>Best way to reach you</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="contactPref" value="Text" checked /> Text message</label>
+          <label class="radio-option"><input type="radio" name="contactPref" value="Call" /> Phone call</label>
+          <label class="radio-option"><input type="radio" name="contactPref" value="Email" /> Email</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" onclick="goPrev(3)">← Back</button>
+        <button type="button" class="btn btn-primary" onclick="submitForm()">Send my quote request</button>
+      </div>
+    </div>
+
+    <!-- ========== Confirmation ========== -->
+    <div class="step" data-step="4">
+      <div class="confirm">
+        <div class="confirm-icon">✓</div>
+        <h2>Got it. We're on it.</h2>
+        <p>Thanks <strong id="confirm-name">there</strong> — we got your quote request.</p>
+        <p>You'll hear back from us by <strong id="confirm-pref">text</strong>, usually within an hour during business hours (Mon–Sat, 6am–7:30pm).</p>
+        <div class="confirm-meta">
+          <strong>What happens next:</strong><br />
+          1. We review your details and put together a quote.<br />
+          2. We text or email it back, usually same day.<br />
+          3. If it works for you, we lock in a slot.<br /><br />
+          <strong>Need us sooner?</strong> Call or text <a href="tel:7025514878">702-551-4878</a>.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="text-align:center; color: var(--ink-mute); font-size: 13px; margin-top: 16px;">
+    Or call/text us directly: <a href="tel:7025514878" style="color: var(--brand-dark); font-weight: 600;">702-551-4878</a>
+  </p>
+</div>
+
+<div class="mobile-call-bar">
+  <a href="tel:7025514878" class="call">📞 Call</a>
+  <a href="sms:7025514878" class="text">💬 Text</a>
+</div>
+
+<script>
+  const formState = { service: null, subType: null };
+
+  // ===== Service tile selection (step 1) =====
+  document.querySelectorAll('.service-tile').forEach(tile => {
+    tile.addEventListener('click', () => {
+      document.querySelectorAll('.service-tile').forEach(t => t.classList.remove('selected'));
+      tile.classList.add('selected');
+      formState.service = tile.dataset.service;
+      formState.subType = null; // reset on re-pick
+      document.querySelectorAll('.big-radio').forEach(r => r.classList.remove('selected'));
+      document.getElementById('service-error').style.display = 'none';
+      updateConditionals();
+      filterPropertyType();
+    });
+  });
+
+  // ===== Sub-type radio (step 2, only when service=general) =====
+  document.querySelectorAll('.big-radio').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.big-radio').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      formState.subType = btn.dataset.subtype;
+      const err = document.getElementById('subtype-error');
+      if (err) err.style.display = 'none';
+      updateConditionals();
+      filterPropertyType();
+    });
+  });
+
+  // Effective service = subType when service=general, else service itself
+  function effectiveService() {
+    return formState.service === 'general' ? formState.subType : formState.service;
+  }
+
+  function updateConditionals() {
+    const effective = effectiveService();
+    document.querySelectorAll('.conditional').forEach(el => {
+      const showFor = el.dataset.showFor;
+      if (showFor === 'general') {
+        // The subtype-picker itself: show when service=general
+        el.style.display = formState.service === 'general' ? 'block' : 'none';
+      } else {
+        // All other conditionals: match on effective service
+        el.style.display = showFor === effective ? 'block' : 'none';
+      }
+    });
+
+    // Step 2 subhead
+    const subs = {
+      general: 'First — is this for a home or a business?',
+      residential: 'A few details about your home so we can lock in the right cadence and crew.',
+      window: 'A few details about your windows so we can size the quote accurately.',
+      move: 'A few details about the unit so we can quote a proper move clean.',
+      'post-construction': 'A few details about the project so we can phase the cleanup.',
+      commercial: 'A few details about your space and schedule.'
+    };
+    const subKey = (formState.service === 'general' && !formState.subType) ? 'general' : effective;
+    if (subKey && subs[subKey]) {
+      document.getElementById('step2-sub').textContent = subs[subKey];
+    }
+  }
+
+  // ===== Property-type filtering (residential vs commercial) =====
+  // UX: progressive disclosure — only show property options relevant to the user's segment.
+  function filterPropertyType() {
+    const select = document.getElementById('property-type');
+    if (!select) return;
+    const effective = effectiveService();
+    const residentialOpts = ['Single-family home', 'Apartment / condo', 'Townhouse', 'Other'];
+    const commercialOpts = ['Office', 'Retail / storefront', 'Restaurant', 'Salon / spa', 'New construction', 'Other'];
+    const allOpts = ['Single-family home', 'Apartment / condo', 'Townhouse', 'Office', 'Retail / storefront', 'Restaurant', 'Salon / spa', 'New construction', 'Other'];
+
+    let shown = allOpts;
+    if (effective === 'residential' || effective === 'move') shown = residentialOpts;
+    else if (effective === 'commercial') shown = commercialOpts;
+    // window/post-construction/null: show all (mixed audience)
+
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Select…</option>' + shown.map(o => `<option>${o}</option>`).join('');
+    if (shown.includes(currentVal)) select.value = currentVal;
+  }
+
+  // Radio / checkbox visual selection
+  document.querySelectorAll('.radio-option, .checkbox-option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      const input = opt.querySelector('input');
+      if (input.type === 'radio') {
+        // remove selected from siblings
+        const name = input.name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(i => {
+          i.closest('.radio-option, .checkbox-option').classList.remove('selected');
+        });
+        opt.classList.add('selected');
+      } else {
+        opt.classList.toggle('selected', input.checked);
+        // Sync after click
+        setTimeout(() => opt.classList.toggle('selected', input.checked), 0);
+      }
+    });
+  });
+
+  // Step navigation
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+    document.querySelectorAll('.progress-step').forEach((p, i) => {
+      p.classList.toggle('active', (i + 1) <= n && n <= 3);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goNext(currentStep) {
+    if (currentStep === 1) {
+      if (!formState.service) {
+        document.getElementById('service-error').style.display = 'block';
+        return;
+      }
+    }
+    if (currentStep === 2) {
+      // Require subtype selection when service=general
+      if (formState.service === 'general' && !formState.subType) {
+        const err = document.getElementById('subtype-error');
+        if (err) {
+          err.style.display = 'block';
+          err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+      }
+      const propertyType = document.getElementById('property-type');
+      if (!propertyType.value) {
+        propertyType.closest('.field').classList.add('has-error');
+        propertyType.focus();
+        return;
+      }
+      propertyType.closest('.field').classList.remove('has-error');
+    }
+    showStep(currentStep + 1);
+  }
+
+  function goPrev(currentStep) {
+    showStep(currentStep - 1);
+  }
+
+  function submitForm() {
+    const required = ['firstName', 'phone', 'email'];
+    let valid = true;
+    required.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.closest('.field').classList.add('has-error');
+        valid = false;
+      } else {
+        el.closest('.field').classList.remove('has-error');
+      }
+    });
+    if (!valid) {
+      document.getElementById('firstName').focus();
+      return;
+    }
+
+    // In production: POST to /api/quote-request
+    // For prototype: show confirmation
+    const name = document.getElementById('firstName').value || 'there';
+    const pref = document.querySelector('input[name="contactPref"]:checked')?.value.toLowerCase() || 'text';
+    document.getElementById('confirm-name').textContent = name;
+    document.getElementById('confirm-pref').textContent = pref;
+
+    showStep(4);
+
+    // Reset progress visually (we're past step 3)
+    document.querySelectorAll('.progress-step').forEach(p => p.classList.add('active'));
+
+    // Analytics hook (example)
+    if (typeof gtag === 'function') {
+      gtag('event', 'generate_lead', {
+        service: formState.service,
+        value: 1,
+      });
+    }
+  }
+</script>
+
+</body>
+</html>

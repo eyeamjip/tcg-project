@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://thecleanguyslv.com/window-cleaning#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does window cleaning cost in Las Vegas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most residential window cleanings in Las Vegas range from $150 to $400 depending on the number of windows, the home's height, and whether you want screens and tracks included. Commercial storefronts are typically priced per visit on a recurring contract. We give every quote in writing so there are no surprises."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you clean second-story exterior windows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We use water-fed poles and extension ladders for two-story homes. For homes taller than two stories, we send a tech to evaluate before quoting."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will my windows streak in the Las Vegas heat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "This is the most common worry, and it is a fair one — water dries fast here. We use professional squeegees, fresh distilled-water mixes, and we work in the right order (top down, dry as we go). If you ever see a streak after we leave, call us back and we fix it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you clean the screens too?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. We remove the screens, rinse them down, and reinstall them as part of every standard window cleaning. If a screen is damaged we tell you before doing anything to it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer recurring window cleaning?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — monthly, bi-monthly, quarterly, or twice a year. Recurring clients get priority scheduling and a small repeat-customer discount."
+      }
+    }
+  ]
+}

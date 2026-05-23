@@ -1,0 +1,2905 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>TCG CRM — The Clean Guys</title>
+<meta name="description" content="Internal admin for The Clean Guys: clients, invoices, contracts, calendar, forecast." />
+<meta name="theme-color" content="#0F6E56" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            DEFAULT: '#0F6E56',
+            dark:    '#085041',
+            mint:    '#1D9E75',
+            tint:    '#E1F5EE',
+            ink:     '#052821',
+          },
+          surface: {
+            DEFAULT: '#FFFFFF',
+            soft:    '#F7F9F8',
+            sunk:    '#EEF2F0',
+          },
+          line: '#E2E8E5',
+        },
+        fontFamily: {
+          sans: ['Inter','ui-sans-serif','system-ui','sans-serif'],
+          display: ['"Fraunces"','Georgia','serif'],
+        },
+        boxShadow: {
+          tile: '0 1px 0 rgba(8,80,65,.04), 0 8px 24px rgba(8,80,65,.06)',
+          pop:  '0 12px 40px rgba(8,80,65,.18)',
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+<style>
+  html, body { height: 100%; }
+  body {
+    background: #F7F9F8;
+    color: #0B1B17;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .display { font-family: 'Fraunces', Georgia, serif; letter-spacing: -0.01em; }
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  /* Sidebar item */
+  .nav-item {
+    display: flex; align-items: center; gap: .75rem;
+    padding: .55rem .75rem; border-radius: .625rem;
+    color: #1f3833; font-weight: 500; font-size: .9rem;
+    transition: background .15s, color .15s;
+  }
+  .nav-item:hover { background: #EEF2F0; }
+  .nav-item.active {
+    background: #052821; color: #fff;
+  }
+  .nav-item.active svg { color: #1D9E75; }
+
+  /* (Bottom-tab styles removed — tab bar retired in favor of sidebar nav on mobile) */
+
+  /* KPI tile sparkline placeholder */
+  .spark {
+    height: 28px; width: 100%;
+    background:
+      linear-gradient(90deg, transparent 0 100%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 28' preserveAspectRatio='none'><polyline fill='none' stroke='%231D9E75' stroke-width='2' points='0,22 10,18 20,20 30,14 40,16 50,10 60,12 70,7 80,9 90,5 100,3'/></svg>");
+    background-size: 100% 100%;
+  }
+
+  /* Pill */
+  .pill {
+    display: inline-flex; align-items: center; gap: .35rem;
+    padding: .2rem .55rem; border-radius: 999px;
+    font-size: .72rem; font-weight: 600;
+    background: #EEF2F0; color: #1f3833;
+    border: 1px solid #E2E8E5;
+  }
+  .pill.danger  { background: #FDECEC; color: #8A1F1F; border-color: #F4C7C7; }
+  .pill.warn    { background: #FFF6E5; color: #875A00; border-color: #F2DCA0; }
+  .pill.ok      { background: #E1F5EE; color: #085041; border-color: #BFE5D6; }
+  .pill.info    { background: #E6EEF7; color: #1F3D6B; border-color: #C8D6EB; }
+
+  /* Avatar */
+  .avatar {
+    width: 32px; height: 32px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg,#0F6E56,#1D9E75);
+    flex: none;
+  }
+
+  /* Mobile sidebar pattern: sidebar visible on all viewports.
+     Defaults to a collapsed 80px icon-rail on mobile (set via JS on first visit).
+     Old `display: none < 1024px` rule + bottom-tab-bar element have both been retired —
+     a single nav source is cleaner UX than two parallel ones. */
+
+  /* ------- SIDEBAR collapse pattern (desktop) ------- */
+  .sidebar {
+    width: 232px;
+    transition: width 220ms cubic-bezier(.4,0,.2,1);
+  }
+  .sidebar.is-collapsed { width: 72px; }
+
+  /* Hide labels / search / badges when collapsed */
+  .sidebar.is-collapsed .sb-hide { display: none !important; }
+
+  /* Compact nav items when collapsed (icon-only, centered) */
+  .sidebar.is-collapsed .nav-item {
+    justify-content: center;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    position: relative;
+  }
+  .sidebar.is-collapsed .nav-item svg { margin: 0; }
+
+  /* Compact section dividers when collapsed (just a hairline) */
+  .sidebar.is-collapsed .nav-section-label {
+    height: 1px; padding: 0; margin: 12px 16px 8px;
+    background: #E2E8E5; overflow: hidden; color: transparent;
+  }
+
+  /* Tooltip on hover when collapsed */
+  .sidebar.is-collapsed .nav-item[data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #052821;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    z-index: 60;
+    pointer-events: none;
+    box-shadow: 0 8px 20px rgba(8,80,65,.25);
+  }
+
+  /* Collapse toggle button (floating on right edge of sidebar, aligned with TCG logo row) */
+  .sb-toggle {
+    position: absolute;
+    right: -14px;
+    /* Vertically centered with the TCG logo block in the sidebar header.
+       Logo block uses pt-5 (1.25rem) + w-9/10 icon; toggle sits ~center of that row. */
+    top: 1.5rem;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #E2E8E5;
+    color: #4a5b56;
+    display: grid; place-items: center;
+    box-shadow: 0 2px 8px rgba(8,80,65,.10);
+    z-index: 40; /* above sticky topbar (z-30) */
+    transition: transform 220ms, color .15s, background .15s;
+  }
+  .sb-toggle:hover { color: #0F6E56; background: #F7F9F8; border-color: #0F6E56; }
+  .sb-toggle svg { width: 16px; height: 16px; }
+  .sidebar.is-collapsed .sb-toggle svg { transform: rotate(180deg); }
+
+  /* ===== Mobile-only sidebar enhancements ===== */
+  @media (max-width: 1023px) {
+    /* Slightly wider collapsed rail on mobile to fit larger tap-friendly icons */
+    .sidebar.is-collapsed { width: 80px; }
+
+    /* Bigger icons in collapsed mode — Apple HIG 44px tap target */
+    .sidebar.is-collapsed .nav-item {
+      padding: 0.75rem 0;
+      min-height: 44px;
+    }
+    .sidebar.is-collapsed .nav-item svg {
+      width: 22px; height: 22px;
+    }
+
+    /* Bigger toggle button on mobile (was 28x28 → 32x32) for easier thumb access */
+    .sb-toggle {
+      width: 32px;
+      height: 32px;
+      /* Less overhang on mobile (was -16px) — mobile view padding is px-4 (16px)
+         which exactly matched the old overhang and made the chevron kiss the H1 "G".
+         -8px keeps the floating-at-seam aesthetic but gives 8px breathing room. */
+      right: -8px;
+      /* Override desktop's logo-row position — on mobile, sit next to the main H1
+         "Good afternoon, Kervin." headline. */
+      top: 4rem;
+    }
+    .sb-toggle svg { width: 18px; height: 18px; }
+
+    /* Account block sized down a bit when collapsed since avatar is now the only visual element */
+    .sidebar.is-collapsed .border-t .avatar { width: 36px !important; height: 36px !important; }
+  }
+
+  /* Tile hover */
+  .tile { transition: transform .15s, box-shadow .15s; }
+  .tile:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(8,80,65,.10), 0 16px 32px rgba(8,80,65,.06); }
+
+  /* Quiet scrollbar inside tiles */
+  .scroll-y { overflow-y: auto; }
+  .scroll-y::-webkit-scrollbar { width: 8px; }
+  .scroll-y::-webkit-scrollbar-thumb { background: #D6DEDB; border-radius: 8px; }
+
+  /* Default desktop zoom — feels right-sized on PC web browser */
+  @media (min-width: 1024px) {
+    html { font-size: 125%; }
+  }
+
+  /* Mobile — was rendering too zoomed-in; pull back a notch */
+  @media (max-width: 1023px) {
+    html { font-size: 87.5%; }       /* 14px base instead of 16px */
+    h1.display { font-size: 22px; }  /* tame the giant page titles on phone */
+  }
+
+  /* Keep tap targets large on phone */
+  @media (max-width: 640px) {
+    .tap { min-height: 44px; }
+  }
+
+  /* Quick-actions FAB — bottom-right floating + button on mobile.
+     Position bumped up from 84px (which was clearing the now-removed bottom tab bar)
+     to 24px (free clearance from safe-area-inset-bottom). */
+  .fab {
+    position: fixed;
+    right: 18px;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    z-index: 40;
+    width: 56px; height: 56px; border-radius: 999px;
+    background: #0F6E56; color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    box-shadow: 0 14px 30px rgba(8,80,65,.35);
+  }
+  @media (min-width: 1024px) { .fab { display: none; } }
+
+  /* Audit row stripe */
+  .audit-row + .audit-row { border-top: 1px solid #EEF2F0; }
+
+  /* Client detail tabs */
+  .client-tab {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .65rem .85rem; font-size: .85rem; font-weight: 600;
+    color: #4a5b56; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .client-tab:hover { color: #052821; }
+  .client-tab.active {
+    color: #052821; border-bottom-color: #0F6E56;
+  }
+  .client-tab.active svg { color: #0F6E56; }
+
+  /* Hide top sub-nav on non-overview views (will be conditionally shown via JS) */
+  .subnav { display: none; }
+  body[data-view="overview"] #subnav-overview { display: flex; }
+</style>
+</head>
+<body class="font-sans">
+
+<!-- =================== TOPBAR (full-width, sticky — search lives here above the sidebar logo) ===================
+     UX rationale: search is a GLOBAL action (queries across clients, invoices, jobs). Placing it in a
+     full-width topbar above the sidebar matches the Linear/Notion/Vercel pattern and the workspace
+     baseline established in the Realtor CRM. Frees up sidebar for pure navigation. -->
+<header class="topbar-full sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-line">
+  <div class="h-14 flex items-center gap-2 sm:gap-3 px-3 sm:px-4">
+
+    <!-- (Topbar mini-logo removed — sidebar now visible on mobile and shows the brand mark, so a topbar logo was a redundant second source of brand identity.) -->
+
+    <!-- Search bar (always visible, takes the dominant slot) -->
+    <div class="flex-1 flex items-center max-w-md">
+      <label class="relative block w-full">
+        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+        <input type="text" placeholder="Search clients, invoices…"
+          class="w-full pl-9 pr-3 py-2 rounded-lg border border-line bg-surface-soft text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:bg-white" />
+        <kbd class="hidden sm:block absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-stone-400 border border-line rounded px-1.5 py-0.5 bg-white">⌘K</kbd>
+      </label>
+    </div>
+
+    <!-- Right actions: New invoice (desktop), Bell, Account avatar (mobile) -->
+    <div class="ml-auto flex items-center gap-1.5">
+      <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-surface-soft hover:bg-surface-sunk border border-line text-brand-ink tap">
+        <i data-lucide="plus" class="w-4 h-4"></i> New invoice
+      </button>
+      <button class="p-2 rounded-lg hover:bg-surface-sunk text-stone-600 relative tap" title="Notifications">
+        <i data-lucide="bell" class="w-5 h-5"></i>
+        <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+      </button>
+      <button class="lg:hidden p-1 rounded-full" aria-label="Account">
+        <span class="avatar !w-8 !h-8">KM</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- =================== APP SHELL =================== -->
+<div class="flex">
+
+  <!-- ============= SIDEBAR (desktop) — starts BELOW the topbar ============= -->
+  <aside class="sidebar shrink-0 bg-white border-r border-line flex flex-col relative"
+         style="position: sticky; top: 3.5rem; height: calc(100vh - 3.5rem); align-self: flex-start;">
+
+    <!-- Collapse toggle (floating on right edge) -->
+    <button class="sb-toggle" id="sbToggle" aria-label="Toggle sidebar" title="Toggle sidebar">
+      <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+    </button>
+
+    <!-- Logo — TCG brand mark (was 'tg' → updated to full 'TCG' acronym; slightly larger icon).
+         This is the single source of brand identity on every viewport now. -->
+    <div class="px-3 pt-5 pb-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-brand-ink text-white grid place-items-center shrink-0">
+        <span class="display text-[13px] font-bold tracking-tight">TCG</span>
+      </div>
+      <div class="leading-tight sb-hide">
+        <div class="display text-[15px] font-bold text-brand-ink">TCG CRM</div>
+        <div class="text-[11px] text-stone-500 -mt-0.5">The Clean Guys</div>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="px-2.5 flex-1 overflow-y-auto">
+      <div class="nav-section-label text-[10px] font-bold tracking-wider text-stone-400 uppercase px-3 pt-2 pb-1.5">Workspace</div>
+      <a class="nav-item active" data-view="overview" data-tip="Overview" href="#overview">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Overview</span>
+      </a>
+      <a class="nav-item" data-view="leads" data-tip="Leads · 3 new" href="#leads">
+        <i data-lucide="kanban-square" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Leads</span>
+        <span class="sb-hide ml-auto pill warn !py-0.5 !px-2 !text-[10px]">3 new</span>
+      </a>
+      <a class="nav-item" data-view="clients" data-tip="Clients" href="#clients">
+        <i data-lucide="users" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Clients</span>
+      </a>
+      <a class="nav-item" data-view="calendar" data-tip="Booking Calendar" href="#calendar">
+        <i data-lucide="calendar-days" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Booking Calendar</span>
+      </a>
+
+      <div class="nav-section-label text-[10px] font-bold tracking-wider text-stone-400 uppercase px-3 pt-5 pb-1.5">Money</div>
+      <a class="nav-item" data-view="invoices" data-tip="Invoices" href="#invoices">
+        <i data-lucide="receipt" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Invoices</span>
+      </a>
+      <a class="nav-item" data-view="contracts" data-tip="Contracts" href="#contracts">
+        <i data-lucide="file-signature" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Contracts</span>
+      </a>
+      <a class="nav-item" data-view="forecast" data-tip="Forecast" href="#forecast">
+        <i data-lucide="trending-up" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Forecast</span>
+      </a>
+
+      <div class="nav-section-label text-[10px] font-bold tracking-wider text-stone-400 uppercase px-3 pt-5 pb-1.5">Admin</div>
+      <a class="nav-item" data-view="audit" data-tip="Audit Log" href="#audit">
+        <i data-lucide="history" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Audit Log</span>
+      </a>
+      <a class="nav-item" data-view="users" data-tip="Users" href="#users">
+        <i data-lucide="user-cog" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Users</span>
+      </a>
+      <a class="nav-item" data-view="settings" data-tip="Settings" href="#settings">
+        <i data-lucide="settings" class="w-4 h-4 text-stone-500 shrink-0"></i>
+        <span class="sb-hide">Settings</span>
+      </a>
+    </nav>
+
+    <!-- Account block -->
+    <div class="border-t border-line p-3 flex items-center gap-3">
+      <div class="avatar shrink-0">KM</div>
+      <div class="leading-tight flex-1 min-w-0 sb-hide">
+        <div class="text-sm font-semibold text-brand-ink truncate">Kervin Mananzan</div>
+        <div class="text-[11px] text-stone-500">Owner · signed in</div>
+      </div>
+      <button class="p-2 rounded-lg hover:bg-surface-sunk text-stone-500 sb-hide" title="Account menu">
+        <i data-lucide="more-horizontal" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============= MAIN AREA ============= -->
+  <main class="flex-1 min-w-0 flex flex-col">
+
+    <!-- Section sub-nav (Overview only — sticky just below the global topbar).
+         The breadcrumb element from the old topbar is dropped — the active sidebar
+         nav item already conveys "where you are." Crumb JS gracefully no-ops. -->
+    <div id="subnav-overview" class="subnav sticky z-30 bg-white border-b border-line px-4 sm:px-6 lg:px-8 h-11 flex items-center gap-5 text-sm overflow-x-auto"
+         style="top: 3.5rem;">
+      <a class="text-brand-ink font-semibold relative" href="#">
+        Today
+        <span class="absolute -bottom-[12px] left-0 right-0 h-0.5 bg-brand"></span>
+      </a>
+      <a class="text-stone-500 hover:text-brand-ink" href="#">This week</a>
+      <a class="text-stone-500 hover:text-brand-ink" href="#">This month</a>
+      <a class="text-stone-500 hover:text-brand-ink" href="#">Quarter</a>
+      <span class="ml-auto text-stone-400 text-xs hidden sm:inline">As of <span class="num">Sat, May 9 · 3:02 PM</span></span>
+    </div>
+
+    <!-- =============== VIEW: OVERVIEW =============== -->
+    <section id="view-overview" class="view px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Greeting + quick actions -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">
+            Good afternoon, Kervin.
+          </h1>
+          <p class="text-stone-600 text-sm mt-1">
+            Here's how the business is doing right now. <span class="text-stone-400">3 things need your attention.</span>
+          </p>
+        </div>
+
+        <div class="hidden lg:flex items-center gap-2">
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg border border-line bg-white hover:bg-surface-soft text-brand-ink tap">
+            <i data-lucide="user-plus" class="w-4 h-4"></i> New client
+          </button>
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg border border-line bg-white hover:bg-surface-soft text-brand-ink tap">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i> Book a job
+          </button>
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark tap">
+            <i data-lucide="file-plus" class="w-4 h-4"></i> New invoice
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <!-- KPI 1 -->
+        <div class="tile bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="flex items-center justify-between text-xs text-stone-500">
+            <span class="uppercase tracking-wider font-semibold text-[10px]">Revenue MTD</span>
+            <span class="pill ok"><i data-lucide="arrow-up-right" class="w-3 h-3"></i> 12%</span>
+          </div>
+          <div class="mt-3 num text-[26px] sm:text-[28px] font-bold text-brand-ink leading-none">$8,420</div>
+          <div class="text-[11px] text-stone-500 mt-1 num">vs $7,510 last month</div>
+          <div class="spark mt-3"></div>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="tile bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="flex items-center justify-between text-xs text-stone-500">
+            <span class="uppercase tracking-wider font-semibold text-[10px]">Outstanding</span>
+            <span class="pill danger"><i data-lucide="alert-triangle" class="w-3 h-3"></i> 2 overdue</span>
+          </div>
+          <div class="mt-3 num text-[26px] sm:text-[28px] font-bold text-brand-ink leading-none">$1,985</div>
+          <div class="text-[11px] text-stone-500 mt-1">5 invoices unpaid</div>
+          <div class="mt-3 h-2 rounded-full bg-surface-sunk overflow-hidden">
+            <div class="h-full bg-rose-400" style="width:42%"></div>
+          </div>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="tile bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="flex items-center justify-between text-xs text-stone-500">
+            <span class="uppercase tracking-wider font-semibold text-[10px]">Active clients</span>
+            <span class="pill"><i data-lucide="users" class="w-3 h-3"></i> 90 days</span>
+          </div>
+          <div class="mt-3 num text-[26px] sm:text-[28px] font-bold text-brand-ink leading-none">38</div>
+          <div class="text-[11px] text-stone-500 mt-1 num">+4 new this month</div>
+          <div class="mt-3 flex -space-x-2">
+            <span class="avatar !w-6 !h-6 ring-2 ring-white">AG</span>
+            <span class="avatar !w-6 !h-6 ring-2 ring-white" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+            <span class="avatar !w-6 !h-6 ring-2 ring-white" style="background:linear-gradient(135deg,#875A00,#caa44b)">MO</span>
+            <span class="avatar !w-6 !h-6 ring-2 ring-white" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">RV</span>
+            <span class="avatar !w-6 !h-6 ring-2 ring-white !bg-stone-200 !text-stone-600">+34</span>
+          </div>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="tile bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="flex items-center justify-between text-xs text-stone-500">
+            <span class="uppercase tracking-wider font-semibold text-[10px]">Jobs this week</span>
+            <span class="pill info"><i data-lucide="calendar" class="w-3 h-3"></i> Mon–Sat</span>
+          </div>
+          <div class="mt-3 num text-[26px] sm:text-[28px] font-bold text-brand-ink leading-none">11</div>
+          <div class="text-[11px] text-stone-500 mt-1">Next: <span class="text-brand-ink font-semibold">Today 4:00 PM</span> · Aria Grand</div>
+          <div class="mt-3 grid grid-cols-7 gap-1 text-[10px] text-stone-400 num">
+            <div class="text-center">M<div class="h-5 rounded bg-brand/20 mt-1 grid place-items-center text-brand-ink font-bold">2</div></div>
+            <div class="text-center">T<div class="h-5 rounded bg-brand/40 mt-1 grid place-items-center text-brand-ink font-bold">3</div></div>
+            <div class="text-center">W<div class="h-5 rounded bg-brand/30 mt-1 grid place-items-center text-brand-ink font-bold">2</div></div>
+            <div class="text-center">T<div class="h-5 rounded bg-brand/10 mt-1 grid place-items-center text-stone-400">·</div></div>
+            <div class="text-center">F<div class="h-5 rounded bg-brand/50 mt-1 grid place-items-center text-brand-ink font-bold">3</div></div>
+            <div class="text-center">S<div class="h-5 rounded bg-brand/20 mt-1 grid place-items-center text-brand-ink font-bold">1</div></div>
+            <div class="text-center text-stone-300">S<div class="h-5 rounded bg-stone-100 mt-1 grid place-items-center">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2-col layout -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+
+        <!-- Invoice & Contract Audit -->
+        <div class="xl:col-span-2 bg-white rounded-2xl border border-line shadow-tile">
+          <div class="p-4 sm:p-5 flex items-center justify-between border-b border-line">
+            <div>
+              <h2 class="display text-lg font-bold text-brand-ink">Invoice &amp; Contract Audit</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Outstanding paperwork — clear these to clean up the books.</p>
+            </div>
+            <button class="hidden sm:inline-flex items-center gap-1 text-xs text-stone-500 hover:text-brand-ink">
+              View all <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Filter pills -->
+          <div class="px-4 sm:px-5 pt-3 pb-2 flex items-center gap-2 overflow-x-auto">
+            <button class="pill !bg-brand-ink !text-white !border-brand-ink">All <span class="opacity-70">8</span></button>
+            <button class="pill">Invoices <span class="opacity-60">5</span></button>
+            <button class="pill">Contracts <span class="opacity-60">3</span></button>
+            <button class="pill danger">Overdue <span class="opacity-80">2</span></button>
+            <button class="pill warn">Awaiting signature <span class="opacity-80">2</span></button>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="text-[11px] uppercase text-stone-500 border-y border-line bg-surface-soft">
+                <tr>
+                  <th class="text-left font-semibold py-2 px-4 sm:px-5">Client</th>
+                  <th class="text-left font-semibold py-2 px-3">Type</th>
+                  <th class="text-left font-semibold py-2 px-3 hidden md:table-cell">Status</th>
+                  <th class="text-right font-semibold py-2 px-3 num">Amount</th>
+                  <th class="text-right font-semibold py-2 px-3 num hidden sm:table-cell">Age</th>
+                  <th class="text-right font-semibold py-2 px-4 sm:px-5">&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody class="text-brand-ink">
+                <tr class="border-b border-line/70">
+                  <td class="py-3 px-4 sm:px-5">
+                    <div class="flex items-center gap-3">
+                      <span class="avatar !w-8 !h-8" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">AG</span>
+                      <div class="leading-tight">
+                        <div class="font-semibold">Aria Grand HOA</div>
+                        <div class="text-xs text-stone-500">#INV-041</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3"><span class="pill"><i data-lucide="receipt" class="w-3 h-3"></i> Invoice</span></td>
+                  <td class="px-3 hidden md:table-cell"><span class="pill danger">Overdue</span></td>
+                  <td class="px-3 text-right num font-semibold">$485.00</td>
+                  <td class="px-3 text-right num text-rose-600 hidden sm:table-cell">42d</td>
+                  <td class="px-4 sm:px-5 text-right">
+                    <button class="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-dark font-semibold">
+                      Send reminder <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="border-b border-line/70">
+                  <td class="py-3 px-4 sm:px-5">
+                    <div class="flex items-center gap-3">
+                      <span class="avatar !w-8 !h-8" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+                      <div class="leading-tight">
+                        <div class="font-semibold">David Nguyen</div>
+                        <div class="text-xs text-stone-500">#INV-046 · Move-out</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3"><span class="pill"><i data-lucide="receipt" class="w-3 h-3"></i> Invoice</span></td>
+                  <td class="px-3 hidden md:table-cell"><span class="pill danger">Overdue</span></td>
+                  <td class="px-3 text-right num font-semibold">$340.00</td>
+                  <td class="px-3 text-right num text-rose-600 hidden sm:table-cell">9d</td>
+                  <td class="px-4 sm:px-5 text-right">
+                    <button class="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-dark font-semibold">
+                      Send reminder <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="border-b border-line/70">
+                  <td class="py-3 px-4 sm:px-5">
+                    <div class="flex items-center gap-3">
+                      <span class="avatar !w-8 !h-8" style="background:linear-gradient(135deg,#085041,#1D9E75)">OD</span>
+                      <div class="leading-tight">
+                        <div class="font-semibold">Oasis Dental</div>
+                        <div class="text-xs text-stone-500">Master Service Agreement</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3"><span class="pill info"><i data-lucide="file-signature" class="w-3 h-3"></i> Contract</span></td>
+                  <td class="px-3 hidden md:table-cell"><span class="pill warn">Awaiting signature</span></td>
+                  <td class="px-3 text-right num font-semibold text-stone-400">—</td>
+                  <td class="px-3 text-right num text-amber-600 hidden sm:table-cell">3d</td>
+                  <td class="px-4 sm:px-5 text-right">
+                    <button class="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-dark font-semibold">
+                      Open <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr class="border-b border-line/70">
+                  <td class="py-3 px-4 sm:px-5">
+                    <div class="flex items-center gap-3">
+                      <span class="avatar !w-8 !h-8" style="background:linear-gradient(135deg,#875A00,#caa44b)">MO</span>
+                      <div class="leading-tight">
+                        <div class="font-semibold">Mojave Studios</div>
+                        <div class="text-xs text-stone-500">#INV-047 · Post-construction</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3"><span class="pill"><i data-lucide="receipt" class="w-3 h-3"></i> Invoice</span></td>
+                  <td class="px-3 hidden md:table-cell"><span class="pill warn">Sent · unpaid</span></td>
+                  <td class="px-3 text-right num font-semibold">$760.00</td>
+                  <td class="px-3 text-right num text-stone-500 hidden sm:table-cell">2d</td>
+                  <td class="px-4 sm:px-5 text-right">
+                    <button class="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-brand-ink font-semibold">
+                      View <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="py-3 px-4 sm:px-5">
+                    <div class="flex items-center gap-3">
+                      <span class="avatar !w-8 !h-8">CC</span>
+                      <div class="leading-tight">
+                        <div class="font-semibold">Clark County Auto Spa</div>
+                        <div class="text-xs text-stone-500">Recurring Commercial Agreement</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3"><span class="pill info"><i data-lucide="file-signature" class="w-3 h-3"></i> Contract</span></td>
+                  <td class="px-3 hidden md:table-cell"><span class="pill warn">Awaiting signature</span></td>
+                  <td class="px-3 text-right num font-semibold text-stone-400">—</td>
+                  <td class="px-3 text-right num text-stone-500 hidden sm:table-cell">1d</td>
+                  <td class="px-4 sm:px-5 text-right">
+                    <button class="inline-flex items-center gap-1 text-xs text-brand hover:text-brand-dark font-semibold">
+                      Resend <i data-lucide="arrow-up-right" class="w-3 h-3"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3 sm:p-4 border-t border-line text-center">
+            <button class="text-xs text-stone-500 hover:text-brand-ink inline-flex items-center gap-1">
+              Show 3 more <i data-lucide="chevron-down" class="w-3 h-3"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div class="space-y-4 sm:space-y-6">
+
+          <!-- Today's jobs -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 sm:p-5 flex items-center justify-between border-b border-line">
+              <div>
+                <h2 class="display text-lg font-bold text-brand-ink">Today's jobs</h2>
+                <p class="text-xs text-stone-500 mt-0.5">Saturday, May 9 · 2 scheduled</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <a class="text-xs text-brand hover:text-brand-dark font-semibold inline-flex items-center gap-1" href="#jobmode" title="What techs see on their phone">
+                  <i data-lucide="smartphone" class="w-3 h-3"></i> Job mode
+                </a>
+                <a class="text-xs text-stone-500 hover:text-brand-ink inline-flex items-center gap-1" href="#calendar">
+                  Calendar <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </a>
+              </div>
+            </div>
+            <ul class="divide-y divide-line">
+              <li class="p-4 sm:p-5 flex items-start gap-3">
+                <div class="text-center w-12 shrink-0">
+                  <div class="text-[10px] uppercase tracking-wider text-stone-400 font-bold">Now</div>
+                  <div class="num text-lg font-bold text-brand-ink leading-none">2:00<span class="text-xs text-stone-400 ml-0.5">PM</span></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-brand-ink truncate">Window cleaning · Echo Family</div>
+                  <div class="text-xs text-stone-500 truncate">7821 Sunset Ridge Ave, Summerlin</div>
+                  <div class="mt-2 flex items-center gap-2 flex-wrap">
+                    <span class="pill ok"><i data-lucide="play" class="w-3 h-3"></i> In progress</span>
+                    <span class="pill"><i data-lucide="user" class="w-3 h-3"></i> Maria L.</span>
+                  </div>
+                </div>
+              </li>
+              <li class="p-4 sm:p-5 flex items-start gap-3">
+                <div class="text-center w-12 shrink-0">
+                  <div class="text-[10px] uppercase tracking-wider text-stone-400 font-bold">Next</div>
+                  <div class="num text-lg font-bold text-brand-ink leading-none">4:00<span class="text-xs text-stone-400 ml-0.5">PM</span></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-brand-ink truncate">Commercial · Aria Grand HOA</div>
+                  <div class="text-xs text-stone-500 truncate">Lobby + entry windows · weekly</div>
+                  <div class="mt-2 flex items-center gap-2 flex-wrap">
+                    <span class="pill"><i data-lucide="clock" class="w-3 h-3"></i> Scheduled</span>
+                    <span class="pill"><i data-lucide="user" class="w-3 h-3"></i> Jason</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Recurring</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- New leads (pipeline preview) -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 sm:p-5 flex items-center justify-between border-b border-line">
+              <div>
+                <h2 class="display text-lg font-bold text-brand-ink">New leads</h2>
+                <p class="text-xs text-stone-500 mt-0.5">From the website quote form · last 48h</p>
+              </div>
+              <span class="pill warn">3 unread</span>
+            </div>
+            <ul class="divide-y divide-line">
+              <li class="p-4 sm:p-5 flex items-start gap-3 hover:bg-surface-soft cursor-pointer">
+                <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="font-semibold text-brand-ink">David Nguyen</div>
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500" title="Unread"></span>
+                  </div>
+                  <div class="text-xs text-stone-500 truncate">Move-out cleaning · 1,200 sqft · within 7 days</div>
+                </div>
+                <div class="text-[11px] text-stone-400 num shrink-0">2h</div>
+              </li>
+              <li class="p-4 sm:p-5 flex items-start gap-3 hover:bg-surface-soft cursor-pointer">
+                <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#875A00,#caa44b)">RV</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="font-semibold text-brand-ink">Rosa Velasquez</div>
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                  </div>
+                  <div class="text-xs text-stone-500 truncate">Window cleaning · 14 windows · interior + exterior</div>
+                </div>
+                <div class="text-[11px] text-stone-400 num shrink-0">5h</div>
+              </li>
+              <li class="p-4 sm:p-5 flex items-start gap-3 hover:bg-surface-soft cursor-pointer">
+                <span class="avatar !w-9 !h-9">SH</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    <div class="font-semibold text-brand-ink">Summit Hills Salon</div>
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                  </div>
+                  <div class="text-xs text-stone-500 truncate">Commercial · bi-weekly · 1,800 sqft</div>
+                </div>
+                <div class="text-[11px] text-stone-400 num shrink-0">1d</div>
+              </li>
+            </ul>
+            <a class="block p-3 text-center text-xs text-brand hover:text-brand-dark border-t border-line font-semibold" href="#leads">
+              Open lead pipeline →
+            </a>
+          </div>
+
+          <!-- Recent activity -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 sm:p-5 flex items-center justify-between border-b border-line">
+              <div>
+                <h2 class="display text-lg font-bold text-brand-ink">Recent activity</h2>
+                <p class="text-xs text-stone-500 mt-0.5">Firm-wide audit log</p>
+              </div>
+              <a class="text-xs text-stone-500 hover:text-brand-ink inline-flex items-center gap-1" href="#audit">
+                Full log <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </a>
+            </div>
+            <ul class="px-2 py-1">
+              <li class="audit-row p-3 flex items-start gap-3">
+                <span class="avatar !w-7 !h-7 !text-[10px]">JM</span>
+                <div class="flex-1 min-w-0 text-sm">
+                  <p class="text-brand-ink"><b>Jason</b> created invoice <a class="text-brand font-semibold" href="#">#INV-048</a> for <b>Clark County Auto Spa</b> — <span class="num">$320.00</span></p>
+                  <span class="text-[11px] text-stone-400">12 minutes ago</span>
+                </div>
+              </li>
+              <li class="audit-row p-3 flex items-start gap-3">
+                <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+                <div class="flex-1 min-w-0 text-sm">
+                  <p class="text-brand-ink"><b>Kervin</b> marked <a class="text-brand font-semibold" href="#">#INV-039</a> (Mojave Studios) as <span class="text-emerald-700 font-semibold">paid</span> — <span class="num">$185.00</span></p>
+                  <span class="text-[11px] text-stone-400">1 hour ago</span>
+                </div>
+              </li>
+              <li class="audit-row p-3 flex items-start gap-3">
+                <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">ML</span>
+                <div class="flex-1 min-w-0 text-sm">
+                  <p class="text-brand-ink"><b>Maria</b> completed Window Cleaning at <b>4521 W Sahara</b></p>
+                  <span class="text-[11px] text-stone-400">2 hours ago</span>
+                </div>
+              </li>
+              <li class="audit-row p-3 flex items-start gap-3">
+                <span class="avatar !w-7 !h-7 !text-[10px] !bg-stone-200 !text-stone-600">·</span>
+                <div class="flex-1 min-w-0 text-sm">
+                  <p class="text-brand-ink"><b class="text-stone-500 font-semibold">System</b> · Quote form submission received — new lead: <b>David Nguyen</b> (move-out)</p>
+                  <span class="text-[11px] text-stone-400">2 hours ago</span>
+                </div>
+              </li>
+              <li class="audit-row p-3 flex items-start gap-3">
+                <span class="avatar !w-7 !h-7 !text-[10px]">JM</span>
+                <div class="flex-1 min-w-0 text-sm">
+                  <p class="text-brand-ink"><b>Jason</b> sent <span class="font-semibold">contract</span> to <b>Oasis Dental</b> for signature via DocuSeal</p>
+                  <span class="text-[11px] text-stone-400">Yesterday · 4:42 PM</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <p class="mt-8 text-center text-[11px] text-stone-400">
+        TCG CRM · prototype build · v0.1 · for Kervin &amp; Jason · <span class="num">May 9, 2026</span>
+      </p>
+    </section>
+
+    <!-- =============== VIEW: CLIENTS LIST =============== -->
+    <section id="view-clients" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Page header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">Clients</h1>
+          <p class="text-stone-600 text-sm mt-1"><span class="num">58</span> total · <span class="num">38</span> active · <span class="num">12</span> recurring · <span class="num">8</span> open leads</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg border border-line bg-white hover:bg-surface-soft text-brand-ink tap">
+            <i data-lucide="upload" class="w-4 h-4"></i> Export CSV
+          </button>
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark tap">
+            <i data-lucide="user-plus" class="w-4 h-4"></i> New client
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-4">
+        <div class="p-3 sm:p-4 flex items-center gap-2 sm:gap-3 border-b border-line">
+          <label class="relative flex-1 max-w-md">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+            <input type="text" placeholder="Search by name, phone, email, address…"
+              class="w-full pl-9 pr-3 py-2 rounded-lg border border-line bg-surface-soft text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:bg-white" />
+          </label>
+          <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> More filters
+          </button>
+          <button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft">
+            <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Last name</span>
+          </button>
+        </div>
+
+        <!-- Filter pills -->
+        <div class="px-3 sm:px-4 py-2.5 flex items-center gap-2 overflow-x-auto">
+          <button class="pill !bg-brand-ink !text-white !border-brand-ink">All <span class="opacity-70">58</span></button>
+          <button class="pill ok">Active <span class="opacity-80">38</span></button>
+          <button class="pill info">Recurring <span class="opacity-80">12</span></button>
+          <button class="pill warn">Leads <span class="opacity-80">8</span></button>
+          <button class="pill">Inactive <span class="opacity-60">12</span></button>
+          <span class="w-px h-5 bg-line mx-1 shrink-0"></span>
+          <button class="pill">Residential <span class="opacity-60">18</span></button>
+          <button class="pill">Window <span class="opacity-60">22</span></button>
+          <button class="pill">Move in/out <span class="opacity-60">14</span></button>
+          <button class="pill">Post-construction <span class="opacity-60">9</span></button>
+          <button class="pill">Commercial <span class="opacity-60">13</span></button>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-[11px] uppercase text-stone-500 border-y border-line bg-surface-soft">
+              <tr>
+                <th class="text-left font-semibold py-2 px-4">Client</th>
+                <th class="text-left font-semibold py-2 px-3 hidden md:table-cell">Service</th>
+                <th class="text-left font-semibold py-2 px-3 hidden lg:table-cell">Last job</th>
+                <th class="text-right font-semibold py-2 px-3 num">Balance</th>
+                <th class="text-left font-semibold py-2 px-3 hidden sm:table-cell">Status</th>
+                <th class="px-4">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody class="text-brand-ink" id="clients-tbody">
+              <!-- Row: Aria Grand HOA -->
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer" data-client="aria">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">AG</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Aria Grand HOA</div>
+                      <div class="text-xs text-stone-500 truncate">contact@ariagrand.com · 702-555-0184</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Weekly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs num">Today · 4:00 PM</td>
+                <td class="px-3 text-right num font-semibold text-rose-600">$485.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#0F6E56,#1D9E75)">RT</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Rivera Townhouse</div>
+                      <div class="text-xs text-stone-500 truncate">m.rivera@gmail.com · 702-555-9087</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="home" class="w-3 h-3"></i> Residential</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Bi-weekly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">Wed · 10:00 AM</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">David Nguyen</div>
+                      <div class="text-xs text-stone-500 truncate">d.nguyen@gmail.com · 702-555-2731</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="package" class="w-3 h-3"></i> Move-out</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">— pending —</td>
+                <td class="px-3 text-right num font-semibold text-rose-600">$340.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill warn">Lead</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#085041,#1D9E75)">OD</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Oasis Dental</div>
+                      <div class="text-xs text-stone-500 truncate">manager@oasisdental.com · 702-555-9412</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Bi-weekly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">3 days ago</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#875A00,#caa44b)">MO</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Mojave Studios</div>
+                      <div class="text-xs text-stone-500 truncate">build@mojavestudios.com · 702-555-7711</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="hammer" class="w-3 h-3"></i> Post-construction</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">2 days ago</td>
+                <td class="px-3 text-right num font-semibold text-amber-600">$760.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9">CC</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Clark County Auto Spa</div>
+                      <div class="text-xs text-stone-500 truncate">ops@cc-autospa.com · 702-555-0023</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Weekly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">5 days ago</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#0F6E56,#1D9E75)">EF</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Echo Family</div>
+                      <div class="text-xs text-stone-500 truncate">karen.echo@gmail.com · 702-555-3344</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="square" class="w-3 h-3"></i> Window</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">Today · 2:00 PM</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#875A00,#caa44b)">RV</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Rosa Velasquez</div>
+                      <div class="text-xs text-stone-500 truncate">rosa.v@yahoo.com · 702-555-8821</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="square" class="w-3 h-3"></i> Window</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">— never —</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill warn">Lead</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9">SH</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Summit Hills Salon</div>
+                      <div class="text-xs text-stone-500 truncate">hi@summithills.com · 702-555-6655</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">— never —</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill warn">Lead</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row border-b border-line/70 hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">HH</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">The Henderson House</div>
+                      <div class="text-xs text-stone-500 truncate">paula.h@gmail.com · 702-555-4488</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell"><span class="pill"><i data-lucide="package" class="w-3 h-3"></i> Move-in</span></td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">2 weeks ago</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill">Inactive</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+
+              <tr class="client-row hover:bg-surface-soft cursor-pointer">
+                <td class="py-3 px-4">
+                  <div class="flex items-center gap-3">
+                    <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#085041,#1D9E75)">GV</span>
+                    <div class="leading-tight min-w-0">
+                      <div class="font-semibold truncate">Grand Vista Apartments</div>
+                      <div class="text-xs text-stone-500 truncate">leasing@grandvista.co · 702-555-2100</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-3 hidden md:table-cell">
+                  <div class="flex items-center gap-1.5">
+                    <span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span>
+                    <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Monthly</span>
+                  </div>
+                </td>
+                <td class="px-3 hidden lg:table-cell text-stone-600 text-xs">Yesterday</td>
+                <td class="px-3 text-right num font-semibold text-stone-400">$0.00</td>
+                <td class="px-3 hidden sm:table-cell"><span class="pill ok">Active</span></td>
+                <td class="px-4 text-right"><button class="p-1.5 rounded hover:bg-surface-sunk text-stone-500" onclick="event.stopPropagation()"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination footer -->
+        <div class="p-3 sm:p-4 border-t border-line flex items-center justify-between text-xs text-stone-500">
+          <span>Showing <b class="text-brand-ink num">1–10</b> of <span class="num">58</span></span>
+          <div class="flex items-center gap-1">
+            <button class="px-2 py-1 rounded hover:bg-surface-sunk" disabled><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+            <span class="px-2 num"><b class="text-brand-ink">1</b> / 6</span>
+            <button class="px-2 py-1 rounded hover:bg-surface-sunk"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: CLIENT DETAIL =============== -->
+    <section id="view-client-detail" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+      <!-- Back link -->
+      <a href="#clients" class="inline-flex items-center gap-1.5 text-sm text-stone-500 hover:text-brand-ink mb-4">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> All clients
+      </a>
+
+      <!-- Client header card -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-4 overflow-hidden">
+        <!-- Banner -->
+        <div class="h-20 sm:h-24 bg-gradient-to-r from-brand-ink to-brand"></div>
+        <div class="px-4 sm:px-6 pb-5 -mt-10 sm:-mt-12">
+          <div class="flex flex-col sm:flex-row sm:items-end gap-4">
+            <div class="avatar !w-20 !h-20 !text-2xl ring-4 ring-white shadow-lg" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">AG</div>
+            <div class="flex-1 min-w-0 sm:pb-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="display text-[26px] sm:text-[30px] font-bold text-brand-ink leading-tight">Aria Grand HOA</h1>
+                <span class="pill ok">Active</span>
+                <span class="pill info"><i data-lucide="repeat" class="w-3 h-3"></i> Recurring · weekly</span>
+              </div>
+              <p class="text-sm text-stone-500 mt-1">Client since <span class="num">Mar 2024</span> · 28 jobs completed · Source: Referral (Oasis Dental)</p>
+            </div>
+            <div class="flex items-center gap-2 sm:pb-1">
+              <button class="p-2 rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap" title="Call"><i data-lucide="phone" class="w-4 h-4"></i></button>
+              <button class="p-2 rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap" title="Text"><i data-lucide="message-square" class="w-4 h-4"></i></button>
+              <button class="p-2 rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap" title="Email"><i data-lucide="mail" class="w-4 h-4"></i></button>
+              <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark tap">
+                <i data-lucide="file-plus" class="w-4 h-4"></i> New invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab nav -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-4">
+        <div class="px-2 sm:px-4 border-b border-line flex items-center gap-1 sm:gap-2 overflow-x-auto">
+          <button class="client-tab active" data-tab="profile">
+            <i data-lucide="user" class="w-4 h-4"></i> Profile
+          </button>
+          <button class="client-tab" data-tab="history">
+            <i data-lucide="history" class="w-4 h-4"></i> Service History
+            <span class="pill !py-0 !px-1.5 !text-[10px]">28</span>
+          </button>
+          <button class="client-tab" data-tab="invoices">
+            <i data-lucide="receipt" class="w-4 h-4"></i> Invoices
+            <span class="pill danger !py-0 !px-1.5 !text-[10px]">1 overdue</span>
+          </button>
+          <button class="client-tab" data-tab="contracts">
+            <i data-lucide="file-signature" class="w-4 h-4"></i> Contracts
+          </button>
+          <button class="client-tab" data-tab="notes">
+            <i data-lucide="sticky-note" class="w-4 h-4"></i> Notes
+            <span class="pill !py-0 !px-1.5 !text-[10px]">4</span>
+          </button>
+        </div>
+
+        <!-- Tab: Profile -->
+        <div class="tab-panel" data-tab="profile">
+          <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Contact -->
+            <div class="space-y-3">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-400">Contact</div>
+              <div class="bg-surface-soft border border-line rounded-xl p-4 space-y-3">
+                <div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Primary contact</div>
+                  <div class="font-semibold text-brand-ink">Carlos Reyes <span class="font-normal text-stone-500 text-sm">· Property Manager</span></div>
+                </div>
+                <div class="grid grid-cols-1 gap-2 text-sm">
+                  <a class="flex items-center gap-2 text-brand-ink hover:text-brand" href="mailto:contact@ariagrand.com">
+                    <i data-lucide="mail" class="w-4 h-4 text-stone-400"></i> contact@ariagrand.com
+                  </a>
+                  <a class="flex items-center gap-2 text-brand-ink hover:text-brand num" href="tel:7025550184">
+                    <i data-lucide="phone" class="w-4 h-4 text-stone-400"></i> (702) 555-0184
+                  </a>
+                  <div class="flex items-start gap-2 text-brand-ink">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-stone-400 mt-0.5"></i>
+                    <span>9000 W Sahara Ave, Las Vegas NV 89117</span>
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-line">
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider mb-1">Preferred contact</div>
+                  <span class="pill info">Email — copy property manager</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Service profile -->
+            <div class="space-y-3">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-400">Service profile</div>
+              <div class="bg-surface-soft border border-line rounded-xl p-4 space-y-3">
+                <div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Services</div>
+                  <div class="flex flex-wrap gap-1.5 mt-1">
+                    <span class="pill"><i data-lucide="building-2" class="w-3 h-3"></i> Commercial</span>
+                    <span class="pill"><i data-lucide="square" class="w-3 h-3"></i> Window cleaning</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Cadence</div>
+                  <div class="text-sm font-semibold text-brand-ink">Weekly · Saturdays 4:00 PM</div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Standard rate</div>
+                  <div class="text-sm font-semibold text-brand-ink num">$185.00 / visit</div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Assigned tech</div>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="avatar !w-7 !h-7 !text-[11px]">JM</span>
+                    <span class="text-sm font-semibold text-brand-ink">Jason Mananzan</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="space-y-3">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-400">Account</div>
+              <div class="bg-surface-soft border border-line rounded-xl p-4 grid grid-cols-2 gap-3 text-center">
+                <div>
+                  <div class="num text-2xl font-bold text-brand-ink">28</div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Jobs done</div>
+                </div>
+                <div>
+                  <div class="num text-2xl font-bold text-brand-ink">$5,180</div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Lifetime</div>
+                </div>
+                <div>
+                  <div class="num text-2xl font-bold text-rose-600">$485</div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Open balance</div>
+                </div>
+                <div>
+                  <div class="num text-2xl font-bold text-brand-ink">14</div>
+                  <div class="text-[11px] text-stone-500 uppercase tracking-wider">Months active</div>
+                </div>
+              </div>
+
+              <!-- Pinned notes preview -->
+              <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-wider font-bold text-amber-800 mb-2">
+                  <i data-lucide="pin" class="w-3 h-3"></i> Pinned note
+                </div>
+                <p class="text-sm text-amber-900 leading-relaxed">Gate code is <b class="num">#4421</b>. Park behind building near dumpster, never blocking dock. Ask for Carlos at the front desk.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Service History -->
+        <div class="tab-panel hidden" data-tab="history">
+          <div class="p-4 sm:p-6">
+            <ol class="relative border-l-2 border-line ml-3 space-y-5">
+              <li class="ml-6">
+                <div class="absolute -left-[9px] w-4 h-4 rounded-full bg-brand ring-4 ring-white"></div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-sm font-semibold text-brand-ink">Window cleaning · weekly</span>
+                  <span class="pill ok"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>
+                  <span class="text-xs text-stone-400 num">Sat, May 9 · 4:00 PM</span>
+                </div>
+                <p class="text-sm text-stone-600">Lobby + entry windows. Tech: Jason. Duration: 45m. Photos attached.</p>
+                <div class="mt-1 flex items-center gap-3 text-xs">
+                  <a class="text-brand font-semibold" href="#">View invoice #INV-049 · $185.00</a>
+                </div>
+              </li>
+              <li class="ml-6">
+                <div class="absolute -left-[9px] w-4 h-4 rounded-full bg-brand-mint ring-4 ring-white"></div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-sm font-semibold text-brand-ink">Window cleaning · weekly</span>
+                  <span class="pill ok"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>
+                  <span class="text-xs text-stone-400 num">Sat, May 2</span>
+                </div>
+                <p class="text-sm text-stone-600">Tech: Jason. <span class="text-rose-600">Invoice #INV-041 · OVERDUE 7 days</span></p>
+              </li>
+              <li class="ml-6">
+                <div class="absolute -left-[9px] w-4 h-4 rounded-full bg-brand-mint ring-4 ring-white"></div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-sm font-semibold text-brand-ink">Window cleaning · weekly</span>
+                  <span class="pill ok"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>
+                  <span class="text-xs text-stone-400 num">Sat, Apr 25</span>
+                </div>
+                <p class="text-sm text-stone-600">Tech: Maria L. Storefront streak retouch on north side.</p>
+              </li>
+              <li class="ml-6">
+                <div class="absolute -left-[9px] w-4 h-4 rounded-full bg-stone-300 ring-4 ring-white"></div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="text-sm font-semibold text-brand-ink">Deep clean (one-time)</span>
+                  <span class="pill ok"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>
+                  <span class="text-xs text-stone-400 num">Mon, Mar 31</span>
+                </div>
+                <p class="text-sm text-stone-600">Q1 deep clean — exterior + screen polish. Add-on charge $80.</p>
+              </li>
+              <li class="ml-6">
+                <button class="text-sm text-stone-500 hover:text-brand-ink inline-flex items-center gap-1">
+                  Show 24 earlier jobs <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                </button>
+              </li>
+            </ol>
+
+            <div class="mt-6 p-4 bg-brand-tint/40 border border-brand-tint rounded-xl flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold text-brand-ink">Book a follow-up</div>
+                <div class="text-xs text-stone-600">Next recurring slot: Sat, May 16 · 4:00 PM</div>
+              </div>
+              <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark">
+                <i data-lucide="calendar-plus" class="w-4 h-4"></i> Schedule
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Invoices -->
+        <div class="tab-panel hidden" data-tab="invoices">
+          <div class="p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <button class="pill !bg-brand-ink !text-white !border-brand-ink">All <span class="opacity-70">12</span></button>
+                <button class="pill danger">Overdue <span class="opacity-80">1</span></button>
+                <button class="pill">Sent</button>
+                <button class="pill ok">Paid</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft">
+                  <i data-lucide="zap" class="w-4 h-4"></i> Backpay slot
+                </button>
+                <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark">
+                  <i data-lucide="file-plus" class="w-4 h-4"></i> New invoice
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-line">
+              <table class="w-full text-sm">
+                <thead class="text-[11px] uppercase text-stone-500 bg-surface-soft border-b border-line">
+                  <tr>
+                    <th class="text-left font-semibold py-2 px-3">Invoice</th>
+                    <th class="text-left font-semibold py-2 px-3 hidden sm:table-cell">Issued</th>
+                    <th class="text-right font-semibold py-2 px-3 num">Amount</th>
+                    <th class="text-left font-semibold py-2 px-3">Status</th>
+                    <th class="text-right font-semibold py-2 px-3">&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody class="text-brand-ink">
+                  <tr class="border-b border-line/70">
+                    <td class="py-3 px-3 font-semibold">#INV-041 <span class="block text-xs text-stone-500 font-normal">Window cleaning · May 2</span></td>
+                    <td class="px-3 hidden sm:table-cell num text-xs text-stone-500">May 2, 2026</td>
+                    <td class="px-3 text-right num font-semibold">$485.00</td>
+                    <td class="px-3"><span class="pill danger">Overdue · 7d</span></td>
+                    <td class="px-3 text-right">
+                      <button class="text-xs text-brand hover:text-brand-dark font-semibold">Send reminder</button>
+                    </td>
+                  </tr>
+                  <tr class="border-b border-line/70">
+                    <td class="py-3 px-3 font-semibold">#INV-038 <span class="block text-xs text-stone-500 font-normal">Window cleaning · Apr 25</span></td>
+                    <td class="px-3 hidden sm:table-cell num text-xs text-stone-500">Apr 25, 2026</td>
+                    <td class="px-3 text-right num font-semibold">$185.00</td>
+                    <td class="px-3"><span class="pill ok">Paid · Stripe</span></td>
+                    <td class="px-3 text-right">
+                      <button class="text-xs text-stone-500 hover:text-brand-ink">View</button>
+                    </td>
+                  </tr>
+                  <tr class="border-b border-line/70">
+                    <td class="py-3 px-3 font-semibold">#INV-035 <span class="block text-xs text-stone-500 font-normal">Window cleaning · Apr 18</span></td>
+                    <td class="px-3 hidden sm:table-cell num text-xs text-stone-500">Apr 18, 2026</td>
+                    <td class="px-3 text-right num font-semibold">$185.00</td>
+                    <td class="px-3"><span class="pill ok">Paid · Zelle</span></td>
+                    <td class="px-3 text-right">
+                      <button class="text-xs text-stone-500 hover:text-brand-ink">View</button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 font-semibold">#INV-029 <span class="block text-xs text-stone-500 font-normal">Q1 deep clean</span></td>
+                    <td class="px-3 hidden sm:table-cell num text-xs text-stone-500">Mar 31, 2026</td>
+                    <td class="px-3 text-right num font-semibold">$265.00</td>
+                    <td class="px-3"><span class="pill ok">Paid · Stripe</span></td>
+                    <td class="px-3 text-right">
+                      <button class="text-xs text-stone-500 hover:text-brand-ink">View</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="text-xs text-stone-400 mt-3">Showing 4 of 12 — <a class="text-brand font-semibold hover:underline" href="#">show all invoices</a></p>
+          </div>
+        </div>
+
+        <!-- Tab: Contracts -->
+        <div class="tab-panel hidden" data-tab="contracts">
+          <div class="p-4 sm:p-6 space-y-3">
+            <div class="border border-line rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 grid place-items-center shrink-0">
+                <i data-lucide="file-check" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-brand-ink">Recurring Commercial Agreement <span class="text-xs text-stone-500 font-normal">v2.1</span></div>
+                <div class="text-xs text-stone-500 mt-0.5">Signed via DocuSeal · Mar 14, 2024 · auto-renews annually</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="pill ok"><i data-lucide="check" class="w-3 h-3"></i> Signed</span>
+                <button class="inline-flex items-center gap-1 text-xs text-stone-500 hover:text-brand-ink"><i data-lucide="download" class="w-3.5 h-3.5"></i> PDF</button>
+              </div>
+            </div>
+
+            <div class="border border-amber-200 bg-amber-50/60 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-amber-100 text-amber-700 grid place-items-center shrink-0">
+                <i data-lucide="hourglass" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-brand-ink">2026 Renewal — Master Service Agreement</div>
+                <div class="text-xs text-stone-500 mt-0.5">Sent for signature · 3 days ago · DocuSeal envelope #DS-2208</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="pill warn">Awaiting signature</span>
+                <button class="inline-flex items-center gap-1 px-2.5 py-1 text-xs rounded-lg bg-brand text-white hover:bg-brand-dark">Resend</button>
+              </div>
+            </div>
+
+            <button class="w-full mt-2 inline-flex items-center justify-center gap-1.5 px-3 py-2.5 text-sm rounded-lg border border-dashed border-line text-stone-500 hover:text-brand-ink hover:bg-surface-soft">
+              <i data-lucide="plus" class="w-4 h-4"></i> New contract from template
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Notes -->
+        <div class="tab-panel hidden" data-tab="notes">
+          <div class="p-4 sm:p-6 space-y-4">
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-wider font-bold text-amber-800">
+                  <i data-lucide="pin" class="w-3 h-3"></i> Pinned · Access
+                </div>
+                <span class="text-[11px] text-amber-700">Kervin · Mar 2024</span>
+              </div>
+              <p class="text-sm text-amber-900 leading-relaxed">Gate code is <b class="num">#4421</b>. Park behind building near dumpster, never blocking dock. Ask for Carlos at the front desk.</p>
+            </div>
+
+            <div class="border border-line rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="avatar !w-6 !h-6 !text-[10px]">JM</span>
+                  <span class="text-sm font-semibold text-brand-ink">Jason</span>
+                </div>
+                <span class="text-[11px] text-stone-400 num">May 2 · 5:14 PM</span>
+              </div>
+              <p class="text-sm text-stone-700 leading-relaxed">Carlos mentioned they want to add the rear courtyard windows starting June. Quote separately — ~12 windows, accessible from ground.</p>
+            </div>
+
+            <div class="border border-line rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="avatar !w-6 !h-6 !text-[10px]">KM</span>
+                  <span class="text-sm font-semibold text-brand-ink">Kervin</span>
+                </div>
+                <span class="text-[11px] text-stone-400 num">Apr 18 · 11:02 AM</span>
+              </div>
+              <p class="text-sm text-stone-700 leading-relaxed">Carlos prefers Zelle for one-offs but Stripe for the recurring invoice (HOA accounting requires the receipt).</p>
+            </div>
+
+            <div class="border border-line rounded-xl p-4">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                  <span class="avatar !w-6 !h-6 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">ML</span>
+                  <span class="text-sm font-semibold text-brand-ink">Maria</span>
+                </div>
+                <span class="text-[11px] text-stone-400 num">Apr 25 · 2:48 PM</span>
+              </div>
+              <p class="text-sm text-stone-700 leading-relaxed">North-side glass has hard water spotting. May need acid wash next quarter, not just standard clean.</p>
+            </div>
+
+            <div class="border border-dashed border-line rounded-xl p-3">
+              <textarea rows="2" placeholder="Add a note about Aria Grand…"
+                class="w-full text-sm bg-transparent placeholder:text-stone-400 focus:outline-none resize-none"></textarea>
+              <div class="flex items-center justify-between pt-2 border-t border-line/70 mt-2">
+                <label class="inline-flex items-center gap-1.5 text-xs text-stone-500"><input type="checkbox" class="accent-brand"> Pin to top</label>
+                <button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-brand text-white hover:bg-brand-dark">Save note</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: BOOKING CALENDAR =============== -->
+    <section id="view-calendar" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Page header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-5">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">Booking Calendar</h1>
+          <p class="text-stone-600 text-sm mt-1">11 jobs scheduled this week · 3 unscheduled leads need a slot.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap">
+            <i data-lucide="filter" class="w-4 h-4"></i> Filter
+          </button>
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark tap">
+            <i data-lucide="calendar-plus" class="w-4 h-4"></i> New job
+          </button>
+        </div>
+      </div>
+
+      <!-- Calendar toolbar -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-4 p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div class="flex items-center gap-1">
+          <button class="p-2 rounded-lg hover:bg-surface-soft text-stone-500" title="Previous"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+          <button class="px-3 py-1.5 text-sm rounded-lg border border-line text-brand-ink hover:bg-surface-soft">Today</button>
+          <button class="p-2 rounded-lg hover:bg-surface-soft text-stone-500" title="Next"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+        </div>
+
+        <div class="display text-lg font-bold text-brand-ink">Week of May 4 — May 10, 2026</div>
+
+        <div class="ml-auto flex items-center gap-1 p-1 bg-surface-soft rounded-lg border border-line">
+          <button class="px-2.5 py-1 rounded-md text-xs font-semibold text-stone-500 hover:text-brand-ink">Month</button>
+          <button class="px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-brand-ink shadow-sm">Week</button>
+          <button class="px-2.5 py-1 rounded-md text-xs font-semibold text-stone-500 hover:text-brand-ink">Day</button>
+          <button class="px-2.5 py-1 rounded-md text-xs font-semibold text-stone-500 hover:text-brand-ink">Agenda</button>
+        </div>
+      </div>
+
+      <!-- 2-col layout: week grid + unscheduled leads -->
+      <div class="grid grid-cols-1 xl:grid-cols-[1fr_260px] gap-4">
+
+        <!-- WEEK GRID (desktop) -->
+        <div class="bg-white rounded-2xl border border-line shadow-tile overflow-hidden hidden md:block">
+          <!-- Day headers -->
+          <div class="grid grid-cols-[60px_repeat(7,1fr)] border-b border-line bg-surface-soft text-[11px] uppercase tracking-wider font-bold text-stone-500">
+            <div class="py-2"></div>
+            <div class="py-2 px-2 text-center border-l border-line">Mon<br><span class="num text-brand-ink text-base normal-case font-bold tracking-normal">4</span></div>
+            <div class="py-2 px-2 text-center border-l border-line">Tue<br><span class="num text-brand-ink text-base normal-case font-bold tracking-normal">5</span></div>
+            <div class="py-2 px-2 text-center border-l border-line">Wed<br><span class="num text-brand-ink text-base normal-case font-bold tracking-normal">6</span></div>
+            <div class="py-2 px-2 text-center border-l border-line">Thu<br><span class="num text-brand-ink text-base normal-case font-bold tracking-normal">7</span></div>
+            <div class="py-2 px-2 text-center border-l border-line">Fri<br><span class="num text-brand-ink text-base normal-case font-bold tracking-normal">8</span></div>
+            <div class="py-2 px-2 text-center border-l border-line bg-brand-tint/40">Sat<br><span class="num text-brand text-base normal-case font-bold tracking-normal">9</span></div>
+            <div class="py-2 px-2 text-center border-l border-line">Sun<br><span class="num text-stone-400 text-base normal-case font-bold tracking-normal">10</span></div>
+          </div>
+
+          <!-- Calendar body -->
+          <div class="relative grid grid-cols-[60px_repeat(7,1fr)] text-[11px]" style="--row-h:36px">
+
+            <!-- Time gutter (8a–7p) -->
+            <div class="text-stone-400 num text-right pr-2">
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">8 AM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">9 AM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">10 AM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">11 AM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">12 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">1 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">2 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">3 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">4 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">5 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">6 PM</div>
+              <div style="height:72px" class="flex items-start justify-end pt-0.5">7 PM</div>
+            </div>
+
+            <!-- Mon -->
+            <div class="border-l border-line relative" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <div class="absolute left-1 right-1 top-[144px] h-[144px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer hover:bg-brand/15">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Window · Echo Family</div>
+                <div class="text-[10px] text-stone-500 truncate">10:00 AM · Maria L.</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[504px] h-[216px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Post-construction · Mojave</div>
+                <div class="text-[10px] text-stone-500 truncate">2:00 PM · Jason</div>
+              </div>
+            </div>
+
+            <!-- Tue -->
+            <div class="border-l border-line relative" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <div class="absolute left-1 right-1 top-[72px] h-[144px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Window · The Henderson</div>
+                <div class="text-[10px] text-stone-500 truncate">9:00 AM · Maria L.</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[360px] h-[144px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Move-out · Pinecrest</div>
+                <div class="text-[10px] text-stone-500 truncate">12:00 PM · Jason + 1</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[648px] h-[144px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Auto Spa</div>
+                <div class="text-[10px] text-stone-500 truncate">3:00 PM · Maria L.</div>
+              </div>
+            </div>
+
+            <!-- Wed -->
+            <div class="border-l border-line relative" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <div class="absolute left-1 right-1 top-[216px] h-[144px] rounded-md bg-amber-100 border-l-[3px] border-amber-500 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Post-construction · Mojave</div>
+                <div class="text-[10px] text-stone-500 truncate">11:00 AM · Jason + 2</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[576px] h-[144px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Oasis Dental</div>
+                <div class="text-[10px] text-stone-500 truncate">2:00 PM · Maria L.</div>
+              </div>
+            </div>
+
+            <!-- Thu (light day) -->
+            <div class="border-l border-line relative" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <div class="absolute left-1 right-1 top-[72px] bottom-1 rounded-md border border-dashed border-stone-300 bg-stone-50/50 p-2 grid place-items-center cursor-pointer hover:border-brand/50 hover:bg-brand-tint/20">
+                <div class="text-center">
+                  <i data-lucide="plus" class="w-4 h-4 text-stone-400 mx-auto"></i>
+                  <div class="text-[10px] text-stone-400 mt-0.5">Open day · drop a job</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fri -->
+            <div class="border-l border-line relative" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <div class="absolute left-1 right-1 top-[72px] h-[144px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Grand Vista</div>
+                <div class="text-[10px] text-stone-500 truncate">9:00 AM · Maria L.</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[360px] h-[216px] rounded-md bg-violet-100 border-l-[3px] border-violet-500 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Move-in · 4521 W Sahara</div>
+                <div class="text-[10px] text-stone-500 truncate">12:00 PM · Jason + 1</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[648px] h-[144px] rounded-md bg-brand/10 border-l-[3px] border-brand p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Window · Patel residence</div>
+                <div class="text-[10px] text-stone-500 truncate">3:00 PM · Jason</div>
+              </div>
+            </div>
+
+            <!-- Sat (today highlighted) -->
+            <div class="border-l border-line relative bg-brand-tint/15" style="height:864px">
+              <div class="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_71px,#EEF2F0_72px)] bg-[length:100%_72px]"></div>
+              <!-- now indicator at ~3:00pm -->
+              <div class="absolute left-0 right-0 z-10 flex items-center" style="top:504px">
+                <div class="w-2 h-2 rounded-full bg-rose-500 -ml-1"></div>
+                <div class="flex-1 h-px bg-rose-500"></div>
+              </div>
+              <div class="absolute left-1 right-1 top-[432px] h-[72px] rounded-md bg-brand text-white border-l-[3px] border-white p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-[11px] truncate">Window · Echo Family</div>
+                <div class="text-[10px] opacity-80 truncate">2:00 PM · Maria · IN PROGRESS</div>
+              </div>
+              <div class="absolute left-1 right-1 top-[576px] h-[144px] rounded-md bg-emerald-100 border-l-[3px] border-emerald-600 p-1.5 overflow-hidden cursor-pointer">
+                <div class="font-semibold text-brand-ink text-[11px] truncate">Commercial · Aria Grand</div>
+                <div class="text-[10px] text-stone-500 truncate">4:00 PM · Jason · Recurring</div>
+              </div>
+            </div>
+
+            <!-- Sun (closed) -->
+            <div class="border-l border-line relative bg-stone-50/60" style="height:864px">
+              <div class="absolute inset-0 grid place-items-center text-stone-300">
+                <span class="text-[10px] uppercase tracking-wider font-bold">Closed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AGENDA (mobile) -->
+        <div class="md:hidden bg-white rounded-2xl border border-line shadow-tile divide-y divide-line">
+          <div class="p-4">
+            <div class="flex items-center gap-2 text-[11px] uppercase tracking-wider font-bold text-stone-500">
+              <i data-lucide="calendar-check" class="w-3.5 h-3.5"></i> Today · Sat May 9
+              <span class="ml-auto pill ok">2 jobs</span>
+            </div>
+            <ul class="mt-3 space-y-3">
+              <li class="flex items-start gap-3">
+                <div class="text-center w-12 shrink-0">
+                  <div class="text-[10px] uppercase tracking-wider text-rose-500 font-bold">Now</div>
+                  <div class="num text-base font-bold text-brand-ink leading-none">2:00<span class="text-xs text-stone-400">PM</span></div>
+                </div>
+                <div class="flex-1 min-w-0 bg-brand/5 border-l-[3px] border-brand rounded p-2">
+                  <div class="font-semibold text-brand-ink text-sm">Window · Echo Family</div>
+                  <div class="text-[11px] text-stone-500">7821 Sunset Ridge Ave · Maria L.</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="text-center w-12 shrink-0">
+                  <div class="text-[10px] uppercase tracking-wider text-stone-400 font-bold">Next</div>
+                  <div class="num text-base font-bold text-brand-ink leading-none">4:00<span class="text-xs text-stone-400">PM</span></div>
+                </div>
+                <div class="flex-1 min-w-0 bg-emerald-50 border-l-[3px] border-emerald-600 rounded p-2">
+                  <div class="font-semibold text-brand-ink text-sm">Commercial · Aria Grand</div>
+                  <div class="text-[11px] text-stone-500">9000 W Sahara · Jason · Weekly</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="p-4">
+            <div class="flex items-center gap-2 text-[11px] uppercase tracking-wider font-bold text-stone-500">
+              Sun · May 10 <span class="ml-auto pill">Closed</span>
+            </div>
+            <p class="text-xs text-stone-400 mt-2">No jobs scheduled.</p>
+          </div>
+
+          <div class="p-4">
+            <div class="flex items-center gap-2 text-[11px] uppercase tracking-wider font-bold text-stone-500">
+              Mon · May 11 <span class="ml-auto pill">2 jobs</span>
+            </div>
+            <ul class="mt-3 space-y-3">
+              <li class="flex items-start gap-3">
+                <div class="num text-sm font-bold text-brand-ink shrink-0 w-12">10:00<span class="text-xs text-stone-400">AM</span></div>
+                <div class="flex-1 min-w-0 bg-brand/5 border-l-[3px] border-brand rounded p-2">
+                  <div class="font-semibold text-brand-ink text-sm">Window · Patel residence</div>
+                  <div class="text-[11px] text-stone-500">Summerlin · 8 windows</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="num text-sm font-bold text-brand-ink shrink-0 w-12">2:00<span class="text-xs text-stone-400">PM</span></div>
+                <div class="flex-1 min-w-0 bg-amber-50 border-l-[3px] border-amber-500 rounded p-2">
+                  <div class="font-semibold text-brand-ink text-sm">Post-construction · Mojave</div>
+                  <div class="text-[11px] text-stone-500">Phase 2 punchout · Jason</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- UNSCHEDULED LEADS -->
+        <aside class="bg-white rounded-2xl border border-line shadow-tile">
+          <div class="p-4 border-b border-line flex items-center justify-between">
+            <div>
+              <h2 class="display text-base font-bold text-brand-ink">Unscheduled</h2>
+              <p class="text-[11px] text-stone-500">Drag onto a slot, or open to schedule.</p>
+            </div>
+            <span class="pill warn">3</span>
+          </div>
+          <ul class="divide-y divide-line">
+            <li class="p-3 hover:bg-surface-soft cursor-grab active:cursor-grabbing">
+              <div class="flex items-start gap-2">
+                <i data-lucide="grip-vertical" class="w-4 h-4 text-stone-300 mt-1 shrink-0"></i>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-brand-ink text-sm">David Nguyen</div>
+                  <div class="text-[11px] text-stone-500">Move-out · 1,200 sqft · within 7 days</div>
+                  <div class="mt-1 flex items-center gap-1">
+                    <span class="pill warn !py-0 !px-1.5 !text-[10px]">New lead</span>
+                    <span class="pill !py-0 !px-1.5 !text-[10px]">From web</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="p-3 hover:bg-surface-soft cursor-grab">
+              <div class="flex items-start gap-2">
+                <i data-lucide="grip-vertical" class="w-4 h-4 text-stone-300 mt-1 shrink-0"></i>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-brand-ink text-sm">Rosa Velasquez</div>
+                  <div class="text-[11px] text-stone-500">Window · 14 windows · int + ext</div>
+                  <div class="mt-1 flex items-center gap-1">
+                    <span class="pill warn !py-0 !px-1.5 !text-[10px]">New lead</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="p-3 hover:bg-surface-soft cursor-grab">
+              <div class="flex items-start gap-2">
+                <i data-lucide="grip-vertical" class="w-4 h-4 text-stone-300 mt-1 shrink-0"></i>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-brand-ink text-sm">Summit Hills Salon</div>
+                  <div class="text-[11px] text-stone-500">Commercial · bi-weekly · 1,800 sqft</div>
+                  <div class="mt-1 flex items-center gap-1">
+                    <span class="pill info !py-0 !px-1.5 !text-[10px]">Quoted</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="border-t border-line p-3">
+            <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-2">Legend</div>
+            <ul class="text-[11px] text-stone-600 space-y-1">
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-sky-200 border-l-[3px] border-sky-500"></span> Residential</li>
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-brand/30 border-l-[3px] border-brand"></span> Window</li>
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-violet-200 border-l-[3px] border-violet-500"></span> Move in/out</li>
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-amber-200 border-l-[3px] border-amber-500"></span> Post-construction</li>
+              <li class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-emerald-200 border-l-[3px] border-emerald-600"></span> Commercial</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: FORECAST =============== -->
+    <section id="view-forecast" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Page header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">Forecast</h1>
+          <p class="text-stone-600 text-sm mt-1">Cash flow, outstanding invoices, and projected revenue.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 p-1 bg-surface-soft rounded-lg border border-line">
+            <button class="px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-brand-ink shadow-sm">Monthly</button>
+            <button class="px-2.5 py-1 rounded-md text-xs font-semibold text-stone-500 hover:text-brand-ink">Quarterly</button>
+          </div>
+          <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap">
+            <i data-lucide="download" class="w-4 h-4"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+        <div class="bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="text-xs text-stone-500 uppercase tracking-wider font-semibold text-[10px]">Expected · May</div>
+          <div class="num text-[26px] sm:text-[28px] font-bold text-brand-ink mt-2 leading-none">$10,405</div>
+          <div class="text-[11px] text-stone-500 mt-1 num">11 invoices + 2 scheduled</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="text-xs text-stone-500 uppercase tracking-wider font-semibold text-[10px]">Received · May</div>
+          <div class="num text-[26px] sm:text-[28px] font-bold text-emerald-600 mt-2 leading-none">$8,420</div>
+          <div class="text-[11px] text-stone-500 mt-1 num">81% of expected</div>
+          <div class="mt-3 h-1.5 rounded-full bg-surface-sunk overflow-hidden">
+            <div class="h-full bg-emerald-500" style="width:81%"></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="text-xs text-stone-500 uppercase tracking-wider font-semibold text-[10px]">Outstanding</div>
+          <div class="num text-[26px] sm:text-[28px] font-bold text-rose-600 mt-2 leading-none">$1,985</div>
+          <div class="text-[11px] text-stone-500 mt-1">5 invoices · 2 overdue</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-line p-4 sm:p-5 shadow-tile">
+          <div class="text-xs text-stone-500 uppercase tracking-wider font-semibold text-[10px]">Commission owed</div>
+          <div class="num text-[26px] sm:text-[28px] font-bold text-brand-ink mt-2 leading-none">$842</div>
+          <div class="text-[11px] text-stone-500 mt-1">2 techs · pays Friday</div>
+        </div>
+      </div>
+
+      <!-- 12-month chart -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-6 p-4 sm:p-6">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h2 class="display text-lg font-bold text-brand-ink">Expected vs received</h2>
+            <p class="text-xs text-stone-500 mt-0.5">Rolling 12 months · ending May 2026</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs">
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm border border-brand"></span> Expected</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-brand"></span> Received</span>
+          </div>
+        </div>
+
+        <!-- SVG bar chart -->
+        <div class="w-full overflow-x-auto">
+          <svg viewBox="0 0 720 240" class="w-full min-w-[640px] h-[200px] sm:h-[240px]" preserveAspectRatio="xMidYMid meet">
+            <!-- y-axis grid -->
+            <g stroke="#EEF2F0" stroke-width="1">
+              <line x1="40" y1="20"  x2="710" y2="20"/>
+              <line x1="40" y1="70"  x2="710" y2="70"/>
+              <line x1="40" y1="120" x2="710" y2="120"/>
+              <line x1="40" y1="170" x2="710" y2="170"/>
+              <line x1="40" y1="200" x2="710" y2="200" stroke="#D6DEDB"/>
+            </g>
+            <g font-family="Inter" font-size="10" fill="#94A29E" text-anchor="end">
+              <text x="34" y="24">$12k</text>
+              <text x="34" y="74">$9k</text>
+              <text x="34" y="124">$6k</text>
+              <text x="34" y="174">$3k</text>
+              <text x="34" y="204">$0</text>
+            </g>
+
+            <!-- bars: 12 months. each group ~52px wide. expected (outline) + received (fill) -->
+            <!-- helper: x = 50 + i*55, expected x, fill -->
+            <g>
+              <!-- Jun -->
+              <rect x="55"  y="146" width="14" height="54"  fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="71"  y="155" width="14" height="45"  fill="#0F6E56" rx="2"/>
+              <!-- Jul -->
+              <rect x="110" y="130" width="14" height="70"  fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="126" y="138" width="14" height="62"  fill="#0F6E56" rx="2"/>
+              <!-- Aug -->
+              <rect x="165" y="118" width="14" height="82"  fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="181" y="125" width="14" height="75"  fill="#0F6E56" rx="2"/>
+              <!-- Sep -->
+              <rect x="220" y="110" width="14" height="90"  fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="236" y="118" width="14" height="82"  fill="#0F6E56" rx="2"/>
+              <!-- Oct -->
+              <rect x="275" y="100" width="14" height="100" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="291" y="106" width="14" height="94"  fill="#0F6E56" rx="2"/>
+              <!-- Nov -->
+              <rect x="330" y="92"  width="14" height="108" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="346" y="98"  width="14" height="102" fill="#0F6E56" rx="2"/>
+              <!-- Dec -->
+              <rect x="385" y="84"  width="14" height="116" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="401" y="92"  width="14" height="108" fill="#0F6E56" rx="2"/>
+              <!-- Jan -->
+              <rect x="440" y="76"  width="14" height="124" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="456" y="86"  width="14" height="114" fill="#0F6E56" rx="2"/>
+              <!-- Feb -->
+              <rect x="495" y="74"  width="14" height="126" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="511" y="80"  width="14" height="120" fill="#0F6E56" rx="2"/>
+              <!-- Mar -->
+              <rect x="550" y="62"  width="14" height="138" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="566" y="70"  width="14" height="130" fill="#0F6E56" rx="2"/>
+              <!-- Apr -->
+              <rect x="605" y="58"  width="14" height="142" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="621" y="64"  width="14" height="136" fill="#0F6E56" rx="2"/>
+              <!-- May (current — partial received) -->
+              <rect x="660" y="50"  width="14" height="150" fill="none" stroke="#0F6E56" stroke-width="1.5" rx="2"/>
+              <rect x="676" y="80"  width="14" height="120" fill="#1D9E75" rx="2"/>
+              <!-- "current" tag above May -->
+              <rect x="655" y="32" width="40" height="14" rx="3" fill="#052821"/>
+              <text x="675" y="42" font-family="Inter" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">May</text>
+            </g>
+
+            <!-- x-axis labels -->
+            <g font-family="Inter" font-size="10" fill="#94A29E" text-anchor="middle">
+              <text x="69"  y="220">Jun</text>
+              <text x="124" y="220">Jul</text>
+              <text x="179" y="220">Aug</text>
+              <text x="234" y="220">Sep</text>
+              <text x="289" y="220">Oct</text>
+              <text x="344" y="220">Nov</text>
+              <text x="399" y="220">Dec</text>
+              <text x="454" y="220">Jan</text>
+              <text x="509" y="220">Feb</text>
+              <text x="564" y="220">Mar</text>
+              <text x="619" y="220">Apr</text>
+              <text x="674" y="220" font-weight="700" fill="#0F6E56">May</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 2-col: Aging + Projection -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+
+        <!-- AR Aging -->
+        <div class="bg-white rounded-2xl border border-line shadow-tile">
+          <div class="p-4 sm:p-5 border-b border-line">
+            <h2 class="display text-lg font-bold text-brand-ink">Outstanding · aging</h2>
+            <p class="text-xs text-stone-500 mt-0.5">5 invoices unpaid · $1,985.00 total</p>
+          </div>
+
+          <!-- Bucket bars -->
+          <div class="p-4 sm:p-5 space-y-3 border-b border-line">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="font-semibold text-stone-600">Current (0d)</span>
+                <span class="num text-brand-ink font-semibold">$760.00 · 1</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface-sunk overflow-hidden">
+                <div class="h-full bg-brand-mint" style="width:38%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="font-semibold text-stone-600">1–30 days</span>
+                <span class="num text-brand-ink font-semibold">$340.00 · 1</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface-sunk overflow-hidden">
+                <div class="h-full bg-amber-400" style="width:17%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="font-semibold text-stone-600">31–60 days</span>
+                <span class="num text-brand-ink font-semibold">$485.00 · 1</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface-sunk overflow-hidden">
+                <div class="h-full bg-orange-500" style="width:24%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <span class="font-semibold text-rose-600">60+ days</span>
+                <span class="num text-rose-700 font-semibold">$400.00 · 2</span>
+              </div>
+              <div class="h-2 rounded-full bg-surface-sunk overflow-hidden">
+                <div class="h-full bg-rose-500" style="width:20%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Drill-down list -->
+          <ul class="divide-y divide-line">
+            <li class="p-3 sm:p-4 flex items-center gap-3 hover:bg-surface-soft cursor-pointer">
+              <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">AG</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-brand-ink truncate">Aria Grand HOA</div>
+                <div class="text-xs text-stone-500">#INV-041 · sent May 2</div>
+              </div>
+              <div class="text-right">
+                <div class="num font-semibold text-brand-ink">$485.00</div>
+                <div class="text-[11px] text-rose-600 num">42d overdue</div>
+              </div>
+            </li>
+            <li class="p-3 sm:p-4 flex items-center gap-3 hover:bg-surface-soft cursor-pointer">
+              <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-brand-ink truncate">David Nguyen</div>
+                <div class="text-xs text-stone-500">#INV-046 · sent Apr 30</div>
+              </div>
+              <div class="text-right">
+                <div class="num font-semibold text-brand-ink">$340.00</div>
+                <div class="text-[11px] text-amber-600 num">9d overdue</div>
+              </div>
+            </li>
+            <li class="p-3 sm:p-4 flex items-center gap-3 hover:bg-surface-soft cursor-pointer">
+              <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#875A00,#caa44b)">MO</span>
+              <div class="flex-1 min-w-0">
+                <div class="text-sm font-semibold text-brand-ink truncate">Mojave Studios</div>
+                <div class="text-xs text-stone-500">#INV-047 · sent May 7</div>
+              </div>
+              <div class="text-right">
+                <div class="num font-semibold text-brand-ink">$760.00</div>
+                <div class="text-[11px] text-stone-500 num">2d</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Projection + Commission -->
+        <div class="space-y-4 sm:space-y-6">
+
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 sm:p-5 border-b border-line">
+              <h2 class="display text-lg font-bold text-brand-ink">Next 4 weeks</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Projected from booked + recurring jobs.</p>
+            </div>
+            <div class="p-4 sm:p-5">
+              <div class="grid grid-cols-4 gap-3">
+                <div class="bg-brand-tint/40 rounded-xl p-3 text-center">
+                  <div class="text-[10px] uppercase tracking-wider text-brand-dark font-bold">Wk 19</div>
+                  <div class="num text-base font-bold text-brand-ink mt-1">$2,140</div>
+                  <div class="text-[10px] text-stone-500 num">11 jobs</div>
+                </div>
+                <div class="bg-brand-tint/40 rounded-xl p-3 text-center">
+                  <div class="text-[10px] uppercase tracking-wider text-brand-dark font-bold">Wk 20</div>
+                  <div class="num text-base font-bold text-brand-ink mt-1">$2,420</div>
+                  <div class="text-[10px] text-stone-500 num">9 jobs</div>
+                </div>
+                <div class="bg-brand-tint/40 rounded-xl p-3 text-center">
+                  <div class="text-[10px] uppercase tracking-wider text-brand-dark font-bold">Wk 21</div>
+                  <div class="num text-base font-bold text-brand-ink mt-1">$1,950</div>
+                  <div class="text-[10px] text-stone-500 num">7 jobs</div>
+                </div>
+                <div class="bg-brand-tint/40 rounded-xl p-3 text-center">
+                  <div class="text-[10px] uppercase tracking-wider text-brand-dark font-bold">Wk 22</div>
+                  <div class="num text-base font-bold text-brand-ink mt-1">$2,380</div>
+                  <div class="text-[10px] text-stone-500 num">10 jobs</div>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-line flex items-center justify-between">
+                <span class="text-sm text-stone-600">4-week total</span>
+                <span class="num text-2xl font-bold text-brand-ink">$8,890</span>
+              </div>
+              <p class="text-[11px] text-stone-400 mt-2 italic">Estimate only — based on booked and recurring jobs at standard rates. Excludes new leads and unscheduled work.</p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 sm:p-5 border-b border-line">
+              <h2 class="display text-lg font-bold text-brand-ink">Commission · this period</h2>
+              <p class="text-xs text-stone-500 mt-0.5">Pays Friday · auto-calculated from completed jobs.</p>
+            </div>
+            <ul class="divide-y divide-line">
+              <li class="p-3 sm:p-4 flex items-center gap-3">
+                <span class="avatar !w-9 !h-9">JM</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-brand-ink">Jason Mananzan</div>
+                  <div class="text-xs text-stone-500 num">14 jobs · 25% on $2,640</div>
+                </div>
+                <div class="num text-lg font-bold text-brand-ink">$660.00</div>
+              </li>
+              <li class="p-3 sm:p-4 flex items-center gap-3">
+                <span class="avatar !w-9 !h-9" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">ML</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-brand-ink">Maria L.</div>
+                  <div class="text-xs text-stone-500 num">7 jobs · 20% on $910</div>
+                </div>
+                <div class="num text-lg font-bold text-brand-ink">$182.00</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: LEAD PIPELINE =============== -->
+    <section id="view-leads" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Page header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">Lead Pipeline</h1>
+          <p class="text-stone-600 text-sm mt-1">14 leads in flight · est. <span class="num font-semibold text-brand-ink">$5,840</span> if all close.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 p-1 bg-surface-soft rounded-lg border border-line">
+            <button class="px-2.5 py-1 rounded-md text-xs font-semibold bg-white text-brand-ink shadow-sm">Board</button>
+            <button class="px-2.5 py-1 rounded-md text-xs font-semibold text-stone-500 hover:text-brand-ink">List</button>
+          </div>
+          <button class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark tap">
+            <i data-lucide="user-plus" class="w-4 h-4"></i> Add lead
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter strip -->
+      <div class="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+        <button class="pill !bg-brand-ink !text-white !border-brand-ink">All sources</button>
+        <button class="pill">Web form</button>
+        <button class="pill">Referral</button>
+        <button class="pill">Phone</button>
+        <button class="pill">Walk-in</button>
+        <span class="w-px h-5 bg-line mx-1 shrink-0"></span>
+        <button class="pill">All services</button>
+        <button class="pill">Residential</button>
+        <button class="pill">Window</button>
+        <button class="pill">Move</button>
+        <button class="pill">Commercial</button>
+      </div>
+
+      <!-- Kanban board -->
+      <div class="overflow-x-auto pb-4">
+        <div class="grid grid-cols-5 gap-3 min-w-[1100px]">
+
+          <!-- Col 1: New -->
+          <div class="bg-surface-soft rounded-2xl border border-line">
+            <div class="p-3 flex items-center justify-between border-b border-line">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span class="text-sm font-semibold text-brand-ink">New</span>
+                <span class="pill !py-0 !px-1.5 !text-[10px]">3</span>
+              </div>
+              <span class="num text-[11px] text-stone-500">$1,140</span>
+            </div>
+            <div class="p-2 space-y-2">
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">DN</span>
+                  <span class="text-[10px] text-rose-500 font-semibold uppercase tracking-wider">2h</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">David Nguyen</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Move-out · 1,200 sqft</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="globe" class="w-2.5 h-2.5"></i> Web</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$340</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#875A00,#caa44b)">RV</span>
+                  <span class="text-[10px] text-rose-500 font-semibold uppercase tracking-wider">5h</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Rosa Velasquez</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Window · 14 windows int+ext</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="globe" class="w-2.5 h-2.5"></i> Web</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$220</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">PG</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">1d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Paula Garcia</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Window · 6 windows · ext only</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="phone" class="w-2.5 h-2.5"></i> Phone</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$180</span>
+                </div>
+              </div>
+              <button class="w-full p-2 text-xs text-stone-400 hover:text-brand-ink rounded-lg border border-dashed border-line hover:border-brand/40">+ Add</button>
+            </div>
+          </div>
+
+          <!-- Col 2: Contacted -->
+          <div class="bg-surface-soft rounded-2xl border border-line">
+            <div class="p-3 flex items-center justify-between border-b border-line">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span class="text-sm font-semibold text-brand-ink">Contacted</span>
+                <span class="pill !py-0 !px-1.5 !text-[10px]">3</span>
+              </div>
+              <span class="num text-[11px] text-stone-500">$1,580</span>
+            </div>
+            <div class="p-2 space-y-2">
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">SH</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">2d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Summit Hills Salon</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Commercial · bi-weekly</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="globe" class="w-2.5 h-2.5"></i> Web</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$320/wk</span>
+                </div>
+                <div class="mt-2 pt-2 border-t border-line/70 text-[10px] text-stone-500 italic">"Texted Wed — waiting on reply"</div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#085041,#1D9E75)">RS</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">3d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Robert Singh</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Move-in · 3-bed condo</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="user-round" class="w-2.5 h-2.5"></i> Referral</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$420</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">TK</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">4d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Tomi Kahale</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Window · large home Summerlin</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="globe" class="w-2.5 h-2.5"></i> Web</span>
+                  <span class="num text-xs font-semibold text-brand-ink">~$840</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 3: Quoted -->
+          <div class="bg-surface-soft rounded-2xl border border-line">
+            <div class="p-3 flex items-center justify-between border-b border-line">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-violet-500"></span>
+                <span class="text-sm font-semibold text-brand-ink">Quoted</span>
+                <span class="pill !py-0 !px-1.5 !text-[10px]">3</span>
+              </div>
+              <span class="num text-[11px] text-stone-500">$1,820</span>
+            </div>
+            <div class="p-2 space-y-2">
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">BL</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">5d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Boulevard Loft 14B</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Post-construction · turnover</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="user-round" class="w-2.5 h-2.5"></i> Referral</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$680</span>
+                </div>
+                <div class="mt-2 pt-2 border-t border-line/70 text-[10px] text-stone-500 italic">Quote sent Mon · awaiting reply</div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#8A1F1F,#c25a5a)">MJ</span>
+                  <span class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">6d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Mara Jensen</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Move-out · 2-bed apt</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="globe" class="w-2.5 h-2.5"></i> Web</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$285</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">VW</span>
+                  <span class="text-[10px] text-rose-500 font-semibold uppercase tracking-wider">10d</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Vista West HOA</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Commercial · monthly contract</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]"><i data-lucide="user-round" class="w-2.5 h-2.5"></i> Referral</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$855/mo</span>
+                </div>
+                <div class="mt-2 pt-2 border-t border-line/70 text-[10px] text-rose-600 italic">⚠ stale — follow up</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 4: Booked -->
+          <div class="bg-surface-soft rounded-2xl border border-line">
+            <div class="p-3 flex items-center justify-between border-b border-line">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-brand"></span>
+                <span class="text-sm font-semibold text-brand-ink">Booked</span>
+                <span class="pill !py-0 !px-1.5 !text-[10px]">3</span>
+              </div>
+              <span class="num text-[11px] text-stone-500">$1,300</span>
+            </div>
+            <div class="p-2 space-y-2">
+              <div class="lead-card bg-white rounded-xl border-2 border-brand/40 p-3 cursor-grab hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#0F6E56,#1D9E75)">EF</span>
+                  <span class="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">Today</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Echo Family</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Window · scheduled 2:00 PM</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill ok !py-0 !px-1.5 !text-[10px]">In progress</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$185</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">PA</span>
+                  <span class="text-[10px] text-stone-500 font-semibold uppercase tracking-wider">Mon</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Patel residence</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Window · 8 windows int+ext</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]">Scheduled</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$240</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 cursor-grab hover:border-brand/40 hover:shadow-tile">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]">PC</span>
+                  <span class="text-[10px] text-stone-500 font-semibold uppercase tracking-wider">Tue</span>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Pinecrest 4521</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">Move-out · 1,400 sqft</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill !py-0 !px-1.5 !text-[10px]">Scheduled</span>
+                  <span class="num text-xs font-semibold text-brand-ink">$420</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 5: Done -->
+          <div class="bg-surface-soft rounded-2xl border border-line">
+            <div class="p-3 flex items-center justify-between border-b border-line">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                <span class="text-sm font-semibold text-brand-ink">Done · paid</span>
+                <span class="pill !py-0 !px-1.5 !text-[10px]">2</span>
+              </div>
+              <span class="num text-[11px] text-emerald-700">+$450 this wk</span>
+            </div>
+            <div class="p-2 space-y-2">
+              <div class="lead-card bg-white rounded-xl border border-line p-3 opacity-90">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">HH</span>
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">The Henderson House</div>
+                <div class="text-[11px] text-stone-500 mt-0.5 line-through">Move-in · paid Apr 25</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill ok !py-0 !px-1.5 !text-[10px]">Paid</span>
+                  <span class="num text-xs font-semibold text-emerald-700">$265</span>
+                </div>
+              </div>
+              <div class="lead-card bg-white rounded-xl border border-line p-3 opacity-90">
+                <div class="flex items-start justify-between mb-2">
+                  <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#875A00,#caa44b)">MS</span>
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                </div>
+                <div class="font-semibold text-brand-ink text-sm">Mojave Studios</div>
+                <div class="text-[11px] text-stone-500 mt-0.5 line-through">Post-construction · paid May 4</div>
+                <div class="mt-2 flex items-center justify-between">
+                  <span class="pill ok !py-0 !px-1.5 !text-[10px]">Paid</span>
+                  <span class="num text-xs font-semibold text-emerald-700">$185</span>
+                </div>
+              </div>
+              <button class="w-full p-2 text-xs text-stone-400 hover:text-brand-ink rounded-lg border border-dashed border-line hover:border-brand/40">View archive →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion footer -->
+      <div class="mt-4 bg-white rounded-2xl border border-line shadow-tile p-4 sm:p-5">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Conversion · 30d</div>
+            <div class="num text-2xl font-bold text-brand-ink mt-1">62%</div>
+            <div class="text-[11px] text-emerald-600 num">+8 pts vs prior</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Avg time to close</div>
+            <div class="num text-2xl font-bold text-brand-ink mt-1">3.4 days</div>
+            <div class="text-[11px] text-stone-500">From new → booked</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Avg ticket</div>
+            <div class="num text-2xl font-bold text-brand-ink mt-1">$417</div>
+            <div class="text-[11px] text-stone-500">All services</div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-stone-500 font-bold">Top source</div>
+            <div class="text-2xl font-bold text-brand-ink mt-1">Web</div>
+            <div class="text-[11px] text-stone-500 num">58% of leads</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: AUDIT LOG =============== -->
+    <section id="view-audit" class="view hidden px-4 sm:px-6 lg:px-8 pt-6 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+
+      <!-- Page header -->
+      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="display text-[28px] sm:text-[34px] font-bold text-brand-ink leading-tight">Audit Log</h1>
+          <p class="text-stone-600 text-sm mt-1">Every action in TCG CRM. Read-only · for accountability.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft tap">
+            <i data-lucide="download" class="w-4 h-4"></i> Export
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter card -->
+      <div class="bg-white rounded-2xl border border-line shadow-tile mb-4">
+        <div class="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-line">
+          <label class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
+            <input type="text" placeholder="Search by client, invoice number, or text…"
+              class="w-full pl-9 pr-3 py-2 rounded-lg border border-line bg-surface-soft text-sm placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-brand/40 focus:bg-white" />
+          </label>
+
+          <!-- Actor select -->
+          <button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft">
+            <i data-lucide="user" class="w-4 h-4"></i> All staff
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1"></i>
+          </button>
+
+          <!-- Date range -->
+          <button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-line text-stone-600 hover:bg-surface-soft">
+            <i data-lucide="calendar" class="w-4 h-4"></i> Last 7 days
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 ml-1"></i>
+          </button>
+        </div>
+
+        <!-- Action type pills -->
+        <div class="px-3 sm:px-4 py-2.5 flex items-center gap-2 overflow-x-auto">
+          <button class="pill !bg-brand-ink !text-white !border-brand-ink">All <span class="opacity-70">142</span></button>
+          <button class="pill"><i data-lucide="receipt" class="w-3 h-3"></i> Invoice <span class="opacity-60">38</span></button>
+          <button class="pill"><i data-lucide="dollar-sign" class="w-3 h-3"></i> Payment <span class="opacity-60">22</span></button>
+          <button class="pill"><i data-lucide="file-signature" class="w-3 h-3"></i> Contract <span class="opacity-60">11</span></button>
+          <button class="pill"><i data-lucide="briefcase" class="w-3 h-3"></i> Job <span class="opacity-60">41</span></button>
+          <button class="pill"><i data-lucide="user-plus" class="w-3 h-3"></i> Lead <span class="opacity-60">18</span></button>
+          <button class="pill"><i data-lucide="user-cog" class="w-3 h-3"></i> User <span class="opacity-60">4</span></button>
+          <button class="pill"><i data-lucide="server" class="w-3 h-3"></i> System <span class="opacity-60">8</span></button>
+        </div>
+      </div>
+
+      <!-- Feed -->
+      <div class="space-y-6">
+
+        <!-- Day group: Today -->
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <h2 class="display text-base font-bold text-brand-ink">Today · Saturday, May 9</h2>
+            <span class="flex-1 h-px bg-line"></span>
+            <span class="text-[11px] text-stone-400 num">8 events</span>
+          </div>
+          <div class="bg-white rounded-2xl border border-line shadow-tile divide-y divide-line">
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center shrink-0"><i data-lucide="dollar-sign" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> marked <a href="#" class="text-brand font-semibold">#INV-039</a> (Mojave Studios) as <b class="text-emerald-700">paid</b> — <span class="num">$185.00</span> via Stripe</p>
+                <span class="text-[11px] text-stone-400 num">3:02 PM · 28 min ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-brand-tint text-brand grid place-items-center shrink-0"><i data-lucide="receipt" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Jason</b> created invoice <a href="#" class="text-brand font-semibold">#INV-048</a> for <b>Clark County Auto Spa</b> — <span class="num">$320.00</span></p>
+                <span class="text-[11px] text-stone-400 num">2:50 PM · 40 min ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">JM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 grid place-items-center shrink-0"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Maria</b> marked Window Cleaning at <b>4521 W Sahara</b> as <b class="text-emerald-700">complete</b> — uploaded 4 photos</p>
+                <span class="text-[11px] text-stone-400 num">2:14 PM · 1h ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">ML</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 grid place-items-center shrink-0"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Maria</b> marked job <span class="font-semibold">en route</span> — Echo Family · 7821 Sunset Ridge Ave</p>
+                <span class="text-[11px] text-stone-400 num">1:42 PM · 1h 20m ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]" style="background:linear-gradient(135deg,#1f3d6b,#3a6db1)">ML</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-stone-100 text-stone-500 grid place-items-center shrink-0"><i data-lucide="server" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b class="text-stone-500">System</b> · Quote form submission received — new lead: <b>David Nguyen</b> (move-out · 1,200 sqft)</p>
+                <span class="text-[11px] text-stone-400 num">1:08 PM · 1h 54m ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px] !bg-stone-200 !text-stone-600">·</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center shrink-0"><i data-lucide="dollar-sign" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b class="text-stone-500">Stripe webhook</b> · payment received for <a class="text-brand font-semibold" href="#">#INV-039</a> — <span class="num">$185.00</span> · auto-marked paid</p>
+                <span class="text-[11px] text-stone-400 num">12:55 PM · 2h ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px] !bg-stone-200 !text-stone-600">·</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-brand-tint text-brand grid place-items-center shrink-0"><i data-lucide="user-plus" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> moved <b>Tomi Kahale</b> from <span class="font-semibold">New</span> → <span class="font-semibold">Contacted</span> in pipeline</p>
+                <span class="text-[11px] text-stone-400 num">10:30 AM · 4h 30m ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 grid place-items-center shrink-0"><i data-lucide="bell" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> sent payment reminder to <b>Aria Grand HOA</b> for <a href="#" class="text-brand font-semibold">#INV-041</a> (42 days overdue)</p>
+                <span class="text-[11px] text-stone-400 num">8:14 AM · 6h 48m ago</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day group: Yesterday -->
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <h2 class="display text-base font-bold text-brand-ink">Yesterday · Friday, May 8</h2>
+            <span class="flex-1 h-px bg-line"></span>
+            <span class="text-[11px] text-stone-400 num">12 events</span>
+          </div>
+          <div class="bg-white rounded-2xl border border-line shadow-tile divide-y divide-line">
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 grid place-items-center shrink-0"><i data-lucide="file-signature" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Jason</b> sent <span class="font-semibold">contract</span> to <b>Oasis Dental</b> for signature via DocuSeal · envelope <span class="num">#DS-2208</span></p>
+                <span class="text-[11px] text-stone-400 num">4:42 PM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">JM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 grid place-items-center shrink-0"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Jason</b> completed Commercial · <b>Grand Vista Apartments</b> — duration 2h 15m</p>
+                <span class="text-[11px] text-stone-400 num">3:18 PM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">JM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-brand-tint text-brand grid place-items-center shrink-0"><i data-lucide="receipt" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> created invoice <a href="#" class="text-brand font-semibold">#INV-047</a> for <b>Mojave Studios</b> — <span class="num">$760.00</span> · post-construction</p>
+                <span class="text-[11px] text-stone-400 num">11:02 AM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 grid place-items-center shrink-0"><i data-lucide="x-circle" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> voided <a href="#" class="text-brand font-semibold">#INV-044</a> — duplicate of #INV-043 (Echo Family)</p>
+                <span class="text-[11px] text-stone-400 num">9:47 AM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day group: Earlier -->
+        <div>
+          <div class="flex items-center gap-3 mb-2">
+            <h2 class="display text-base font-bold text-brand-ink">Thursday, May 7</h2>
+            <span class="flex-1 h-px bg-line"></span>
+            <span class="text-[11px] text-stone-400 num">9 events</span>
+          </div>
+          <div class="bg-white rounded-2xl border border-line shadow-tile divide-y divide-line">
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-brand-tint text-brand grid place-items-center shrink-0"><i data-lucide="user-cog" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Kervin</b> invited <b>Maria L.</b> as a new user · role: <span class="font-semibold">Tech</span></p>
+                <span class="text-[11px] text-stone-400 num">5:04 PM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px]">KM</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3">
+              <span class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 grid place-items-center shrink-0"><i data-lucide="file-signature" class="w-4 h-4"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-brand-ink"><b>Clark County Auto Spa</b> signed <span class="font-semibold">Recurring Commercial Agreement</span> · DocuSeal envelope <span class="num">#DS-2199</span></p>
+                <span class="text-[11px] text-stone-400 num">2:33 PM</span>
+              </div>
+              <span class="avatar !w-7 !h-7 !text-[10px] !bg-stone-200 !text-stone-600">·</span>
+            </div>
+            <div class="audit-entry p-4 flex items-start gap-3 text-center justify-center">
+              <button class="text-xs text-stone-500 hover:text-brand-ink inline-flex items-center gap-1">
+                Show 7 earlier on May 7 <i data-lucide="chevron-down" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center pt-2">
+          <button class="text-sm text-stone-500 hover:text-brand-ink inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-line bg-white hover:bg-surface-soft">
+            Load earlier days <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: MOBILE JOB MODE =============== -->
+    <section id="view-jobmode" class="view hidden">
+      <div class="max-w-md mx-auto bg-stone-50 min-h-screen pb-28">
+        <!-- Job mode header (different from app topbar) -->
+        <div class="bg-brand-ink text-white px-4 pt-5 pb-12 relative">
+          <div class="flex items-center justify-between mb-5">
+            <a href="#calendar" class="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm">
+              <i data-lucide="arrow-left" class="w-4 h-4"></i> Calendar
+            </a>
+            <span class="pill !bg-white/15 !text-white !border-white/20">JOB MODE</span>
+          </div>
+          <div>
+            <div class="text-[11px] uppercase tracking-wider text-brand-mint font-bold">Up next · 4:00 PM</div>
+            <h1 class="display text-2xl font-bold mt-1">Aria Grand HOA</h1>
+            <p class="text-white/70 text-sm mt-1">Commercial · weekly · 45m est.</p>
+          </div>
+        </div>
+
+        <!-- Card stack on top of header -->
+        <div class="px-4 -mt-8 space-y-3">
+
+          <!-- Address card -->
+          <a class="block bg-white rounded-2xl border border-line shadow-tile p-4 active:bg-surface-soft" href="#">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-lg bg-brand-tint text-brand grid place-items-center shrink-0">
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-brand-ink">9000 W Sahara Ave</div>
+                <div class="text-xs text-stone-500">Las Vegas NV 89117 · 12 min away</div>
+              </div>
+              <i data-lucide="navigation-2" class="w-5 h-5 text-brand"></i>
+            </div>
+            <div class="mt-3 pt-3 border-t border-line text-xs text-brand font-semibold">Open in Maps →</div>
+          </a>
+
+          <!-- Pinned access note -->
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4">
+            <div class="flex items-center gap-1.5 text-[11px] uppercase tracking-wider font-bold text-amber-800 mb-2">
+              <i data-lucide="pin" class="w-3 h-3"></i> Access · pinned by Kervin
+            </div>
+            <p class="text-sm text-amber-900 leading-relaxed">Gate code is <b class="num">#4421</b>. Park behind building near dumpster, never blocking dock. Ask for <b>Carlos</b> at the front desk.</p>
+          </div>
+
+          <!-- Job details card -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile">
+            <div class="p-4 border-b border-line">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-2">Job details</div>
+              <div class="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div class="text-[11px] text-stone-500">Service</div>
+                  <div class="font-semibold text-brand-ink">Window cleaning</div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500">Scope</div>
+                  <div class="font-semibold text-brand-ink">Lobby + entry</div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500">Duration</div>
+                  <div class="font-semibold text-brand-ink num">~45m</div>
+                </div>
+                <div>
+                  <div class="text-[11px] text-stone-500">Rate</div>
+                  <div class="font-semibold text-brand-ink num">$185.00</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-2">Special notes</div>
+              <p class="text-sm text-stone-700 leading-relaxed">North-side glass has hard water spotting — Maria flagged for acid wash next quarter. Otherwise standard recurring scope.</p>
+            </div>
+          </div>
+
+          <!-- Photos -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile p-4">
+            <div class="flex items-center justify-between mb-3">
+              <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500">Photos</div>
+              <span class="text-[11px] text-stone-400">0 / required min 2</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <button class="aspect-square rounded-lg border-2 border-dashed border-line bg-surface-soft text-stone-400 hover:border-brand/50 hover:text-brand grid place-items-center">
+                <div class="text-center">
+                  <i data-lucide="camera" class="w-5 h-5 mx-auto"></i>
+                  <div class="text-[10px] uppercase font-bold mt-1">Before</div>
+                </div>
+              </button>
+              <button class="aspect-square rounded-lg border-2 border-dashed border-line bg-surface-soft text-stone-400 grid place-items-center">
+                <div class="text-center">
+                  <i data-lucide="camera" class="w-5 h-5 mx-auto"></i>
+                  <div class="text-[10px] uppercase font-bold mt-1">During</div>
+                </div>
+              </button>
+              <button class="aspect-square rounded-lg border-2 border-dashed border-line bg-surface-soft text-stone-400 grid place-items-center">
+                <div class="text-center">
+                  <i data-lucide="camera" class="w-5 h-5 mx-auto"></i>
+                  <div class="text-[10px] uppercase font-bold mt-1">After</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Status workflow -->
+          <div class="bg-white rounded-2xl border border-line shadow-tile p-4">
+            <div class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-3">Status</div>
+            <ol class="relative border-l-2 border-brand ml-2.5 space-y-3 mb-4">
+              <li class="ml-5">
+                <div class="absolute -left-[7px] w-3 h-3 rounded-full bg-brand"></div>
+                <div class="text-sm font-semibold text-brand-ink">Scheduled</div>
+                <div class="text-[11px] text-stone-400">3:42 PM</div>
+              </li>
+              <li class="ml-5">
+                <div class="absolute -left-[7px] w-3 h-3 rounded-full bg-brand"></div>
+                <div class="text-sm font-semibold text-brand-ink">En route</div>
+                <div class="text-[11px] text-stone-400">— tap below to start</div>
+              </li>
+              <li class="ml-5 opacity-50">
+                <div class="absolute -left-[7px] w-3 h-3 rounded-full bg-stone-300 border border-white"></div>
+                <div class="text-sm font-semibold text-stone-500">In progress</div>
+              </li>
+              <li class="ml-5 opacity-50">
+                <div class="absolute -left-[7px] w-3 h-3 rounded-full bg-stone-300 border border-white"></div>
+                <div class="text-sm font-semibold text-stone-500">Completed</div>
+              </li>
+            </ol>
+            <button class="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-white font-semibold tap text-base hover:bg-brand-dark">
+              <i data-lucide="navigation-2" class="w-5 h-5"></i> I'm en route
+            </button>
+          </div>
+
+          <!-- Quick actions footer -->
+          <div class="grid grid-cols-3 gap-2">
+            <a class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-line text-stone-600 active:bg-surface-soft" href="tel:7025550184">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+              <span class="text-[11px] font-semibold">Call client</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-line text-stone-600 active:bg-surface-soft" href="#">
+              <i data-lucide="message-square" class="w-5 h-5"></i>
+              <span class="text-[11px] font-semibold">Text Kervin</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 p-3 rounded-xl bg-white border border-line text-stone-600 active:bg-surface-soft" href="#">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+              <span class="text-[11px] font-semibold">Issue</span>
+            </a>
+          </div>
+
+          <p class="text-center text-[11px] text-stone-400 pt-3">TCG CRM · Job Mode · v0.1</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============== VIEW: PLACEHOLDER (other modules) =============== -->
+    <section id="view-placeholder" class="view hidden px-4 sm:px-6 lg:px-8 pt-10 pb-28 lg:pb-10 max-w-[2800px] w-full mx-auto">
+      <div class="bg-white rounded-2xl border border-line shadow-tile p-8 sm:p-12 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-brand-tint text-brand grid place-items-center mx-auto mb-4">
+          <i data-lucide="hammer" class="w-6 h-6"></i>
+        </div>
+        <h2 class="display text-2xl font-bold text-brand-ink" id="placeholderTitle">Coming next</h2>
+        <p class="text-stone-500 text-sm mt-2 max-w-md mx-auto">
+          This module is in the build queue. The shell + nav are wired up — content gets built once you've signed off on the modules already done.
+        </p>
+        <div class="mt-6">
+          <a href="#overview" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm rounded-lg bg-brand text-white hover:bg-brand-dark">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Overview
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- (Mobile bottom tab bar removed — the sidebar's icon-rail handles nav on mobile now.
+     Single source of nav truth: sidebar visible on all viewports.) -->
+
+<!-- FAB (mobile quick action) -->
+<button class="fab" aria-label="Quick action">
+  <i data-lucide="plus" class="w-6 h-6"></i>
+</button>
+
+<script>
+  lucide.createIcons();
+
+  // View switching (lightweight router)
+  const viewMap = {
+    overview:        'Overview',
+    leads:           'Lead Pipeline',
+    clients:         'Clients',
+    'client-detail': 'Aria Grand HOA',
+    calendar:        'Booking Calendar',
+    jobmode:         'Job Mode',
+    invoices:        'Invoices',
+    contracts:       'Contracts',
+    forecast:        'Forecast',
+    audit:           'Audit Log',
+    users:           'Users',
+    settings:        'Settings',
+    more:            'More',
+  };
+
+  // Modules that have a real view built (others fall through to placeholder)
+  const builtViews = new Set([
+    'overview',
+    'leads',
+    'clients',
+    'client-detail',
+    'calendar',
+    'forecast',
+    'audit',
+    'jobmode',
+  ]);
+
+  function setActive(view) {
+    // Highlight nav items (sidebar + bottom tabs)
+    document.querySelectorAll('[data-view]').forEach(el => {
+      // Active matches view OR (view === 'client-detail' && el is 'clients')
+      const match =
+        el.dataset.view === view ||
+        (view === 'client-detail' && el.dataset.view === 'clients');
+      el.classList.toggle('active', match);
+    });
+
+    // Breadcrumb
+    const crumb = document.getElementById('crumbView');
+    if (crumb) crumb.textContent = viewMap[view] || 'Overview';
+
+    // Track view on body for CSS (e.g., subnav visibility)
+    document.body.dataset.view = view;
+
+    // Hide all views, then show target (or placeholder)
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    const targetEl = document.getElementById('view-' + view);
+    if (targetEl && builtViews.has(view)) {
+      targetEl.classList.remove('hidden');
+    } else {
+      const placeholder = document.getElementById('view-placeholder');
+      placeholder.classList.remove('hidden');
+      document.getElementById('placeholderTitle').textContent =
+        (viewMap[view] || 'Coming next') + ' — coming next';
+    }
+
+    // Scroll to top on view change
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  function viewFromHash() {
+    const v = (location.hash || '#overview').replace('#','');
+    return viewMap[v] ? v : 'overview';
+  }
+
+  window.addEventListener('hashchange', () => setActive(viewFromHash()));
+  setActive(viewFromHash());
+
+  // Client row click → open client detail
+  document.addEventListener('click', (e) => {
+    const row = e.target.closest('.client-row');
+    if (row && !e.target.closest('button')) {
+      location.hash = '#client-detail';
+    }
+  });
+
+  // Client detail tab switching
+  document.addEventListener('click', (e) => {
+    const tab = e.target.closest('.client-tab');
+    if (!tab) return;
+    const wantTab = tab.dataset.tab;
+    document.querySelectorAll('.client-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.tab === wantTab);
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => {
+      p.classList.toggle('hidden', p.dataset.tab !== wantTab);
+    });
+  });
+
+  // Sidebar collapse toggle — visible on all viewports, persists in localStorage.
+  // UX detail: on mobile (first visit, no stored preference), default to collapsed
+  // so the icon-rail leaves max room for main content. User can still expand.
+  (function () {
+    const sidebar = document.querySelector('.sidebar');
+    const toggle = document.getElementById('sbToggle');
+    if (!sidebar || !toggle) return;
+
+    const STORAGE_KEY = 'tcg-crm:sidebar-collapsed';
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
+
+    // Restore: explicit stored preference always wins; otherwise default-collapse on mobile
+    if (stored === '1') {
+      sidebar.classList.add('is-collapsed');
+    } else if (stored === null && isMobile) {
+      sidebar.classList.add('is-collapsed');
+    }
+
+    toggle.addEventListener('click', () => {
+      const isCollapsed = sidebar.classList.toggle('is-collapsed');
+      localStorage.setItem(STORAGE_KEY, isCollapsed ? '1' : '0');
+    });
+  })();
+</script>
+
+</body>
+</html>

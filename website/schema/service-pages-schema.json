@@ -1,0 +1,89 @@
+{
+  "_README": "Reference Service schemas for the 4 service pages. Deploy via Rank Math 'Service' schema generator on each page; values below are the inputs.",
+  "services": [
+    {
+      "page": "/window-cleaning",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Window Cleaning",
+        "provider": { "@id": "https://thecleanguyslv.com/#organization" },
+        "areaServed": [
+          "Las Vegas, NV", "Henderson, NV", "Summerlin, NV", "North Las Vegas, NV",
+          "Paradise, NV", "Spring Valley, NV", "Enterprise, NV"
+        ],
+        "description": "Professional window cleaning in Las Vegas. Interior and exterior, residential and commercial. Streak-free, screens included.",
+        "url": "https://thecleanguyslv.com/window-cleaning",
+        "offers": {
+          "@type": "Offer",
+          "priceRange": "$150-$400",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    },
+    {
+      "page": "/move-in-move-out-cleaning",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Move In Move Out Cleaning",
+        "provider": { "@id": "https://thecleanguyslv.com/#organization" },
+        "areaServed": [
+          "Las Vegas, NV", "Henderson, NV", "Summerlin, NV", "North Las Vegas, NV",
+          "Paradise, NV", "Spring Valley, NV", "Enterprise, NV"
+        ],
+        "description": "Move in and move out cleaning in Las Vegas. Full unit prep that meets landlord checklists and gets your deposit back.",
+        "url": "https://thecleanguyslv.com/move-in-move-out-cleaning",
+        "offers": {
+          "@type": "Offer",
+          "priceRange": "$250-$700",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    },
+    {
+      "page": "/post-construction-cleaning",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Post Construction Cleaning",
+        "provider": { "@id": "https://thecleanguyslv.com/#organization" },
+        "areaServed": [
+          "Las Vegas, NV", "Henderson, NV", "Summerlin, NV", "North Las Vegas, NV",
+          "Paradise, NV", "Spring Valley, NV", "Enterprise, NV"
+        ],
+        "description": "Post-construction cleaning in Las Vegas. Phased rough, final, and touch-up cleaning for contractors, builders, and homeowners.",
+        "url": "https://thecleanguyslv.com/post-construction-cleaning",
+        "offers": {
+          "@type": "Offer",
+          "priceRange": "$0.20-$0.40 per sq ft",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    },
+    {
+      "page": "/commercial-cleaning",
+      "schema": {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "serviceType": "Commercial Cleaning",
+        "provider": { "@id": "https://thecleanguyslv.com/#organization" },
+        "areaServed": [
+          "Las Vegas, NV", "Henderson, NV", "Summerlin, NV", "North Las Vegas, NV",
+          "Paradise, NV", "Spring Valley, NV", "Enterprise, NV"
+        ],
+        "description": "Recurring commercial cleaning in Las Vegas. Offices, retail, restaurants, and salons. Month-to-month contracts.",
+        "url": "https://thecleanguyslv.com/commercial-cleaning",
+        "offers": {
+          "@type": "Offer",
+          "priceRange": "$150-$350 per visit",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    }
+  ]
+}

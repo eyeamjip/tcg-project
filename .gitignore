@@ -1,0 +1,47 @@
+# ======================================================================
+# tcg-project monorepo — root .gitignore
+# Subfolders (website/, crm/) have their own .gitignores for narrower scope.
+# ======================================================================
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Node (anywhere in the tree — when CRM gets a real Next.js build)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+dist/
+build/
+.cache/
+.tmp/
+.next/
+*.log
+
+# Secrets — never commit, anywhere
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+credentials.json
+
+# Backups + local dev
+backups/
+*.local
+.local-wp/
+
+# Office temp files (the ~$ prefix WordPress / Word lock files)
+~$*
+
+# Lighthouse / QA artifacts
+lighthouse-reports/

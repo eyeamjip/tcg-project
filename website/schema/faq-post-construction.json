@@ -1,0 +1,47 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://thecleanguyslv.com/post-construction-cleaning#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does post construction cleaning cost in Las Vegas?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most post-construction cleaning in Las Vegas prices between $0.20 and $0.40 per square foot for a final clean. A 2,500 sq ft new build typically runs $500 to $1,000 depending on condition. Rough cleans are quoted lower; commercial or restaurant final cleans can run higher."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you clean during construction or only at the end?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Both. We phase: rough clean during construction, final clean before handover, touch-up clean right before walkthrough. Book one or all three."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are you insured for commercial construction sites?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — fully licensed, bonded, and insured. We carry general liability and can provide a certificate of insurance to general contractors and property owners on request."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How fast can you turn around a final clean?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For most homes and units, we can complete a final clean in one day with a two- or three-person crew. Larger commercial buildouts take 2 to 3 days. We give you a real timeline when we quote."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you remove construction debris and haul it away?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We handle surface debris and bag it for haul. Large construction waste — pallets, drywall sheets, lumber — is a contractor or dumpster trade, not a cleaning trade. We can recommend local haulers if you need one."
+      }
+    }
+  ]
+}
