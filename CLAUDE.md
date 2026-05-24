@@ -133,15 +133,16 @@ Both the website and the CRM keep their own `plan.md` + handoff. **Update them a
 
 ---
 
-## Commit conventions (this repo)
+## Commit conventions (this repo — canonical for both website + CRM work)
 
-- Standard `Co-Authored-By: Claude` trailer is fine
-- Use `[website]` or `[crm]` or `[docs]` or `[preview]` prefixes for clarity on which subproject touched
+- Standard `Co-Authored-By: Claude` trailer is fine.
+- **Always prefix with the touched scope** — `[website]`, `[crm]`, `[docs]`, `[preview]`, or `[monorepo]`.
+- This is the canonical format. The legacy `[phase-X]` format from the pre-monorepo plan is retired — phase number can live in the message body if useful, but the prefix should always be the scope.
 - Examples:
   - `[website] copy: tighten residential FAQ for SEO`
   - `[crm] mobile: reduce chevron right overhang from -16px to -8px`
   - `[preview] sync v1.html + v2.html with latest prototype changes`
-  - `[monorepo] update CLAUDE.md with new branch convention`
+  - `[monorepo] update CLAUDE.md with new commit convention`
 
 ---
 
